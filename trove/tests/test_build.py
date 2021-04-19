@@ -21,9 +21,11 @@ class TestUpdateParams( unittest.TestCase ):
             a = 2,
             dog = False,
             cat = 'not best',
+            **{ 'bad dog': False, },
         )
 
         # Check
         assert pm['a'] == 1
         assert pm['dog']
+        assert not pm['bad dog']
         assert pm['cat'] == 'the best'
