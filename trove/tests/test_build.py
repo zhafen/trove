@@ -21,6 +21,7 @@ class TestUpdateParams( unittest.TestCase ):
             a = 2,
             dog = False,
             cat = 'not best',
+            not_in_config = 'yeah',
             **{ 'bad dog': False, },
         )
 
@@ -29,3 +30,4 @@ class TestUpdateParams( unittest.TestCase ):
         assert pm['dog']
         assert not pm['bad dog']
         assert pm['cat'] == 'the best'
+        assert pm['not_in_config'] == 'yeah'
