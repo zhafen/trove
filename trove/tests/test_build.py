@@ -16,13 +16,14 @@ class TestUpdateParams( unittest.TestCase ):
     def test_update_params( self ):
 
         # Update parameters
-        trove_build.link_params_to_config(
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/basic.trove',
             a = 2,
             dog = False,
             cat = 'not best',
         )
 
-        # Test
-        assert a == 1
-        assert dog
-        assert cat == 'best'
+        # Check
+        assert pm['a'] == 1
+        assert pm['dog']
+        assert pm['cat'] == 'the best'

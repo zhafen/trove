@@ -1,0 +1,6 @@
+[DEFAULTS]
+a = 1
+dog = True
+cat = 'the best'
+lizard = 'not bad'
+bird = 101011
