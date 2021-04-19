@@ -11,9 +11,9 @@ import trove.build as trove_build
 
 ########################################################################
 
-class TestUpdateParams( unittest.TestCase ):
+class TestLinkParams( unittest.TestCase ):
 
-    def test_update_params( self ):
+    def test_link_params( self ):
 
         # Update parameters
         pm = trove_build.link_params_to_config(
@@ -31,3 +31,20 @@ class TestUpdateParams( unittest.TestCase ):
         assert not pm['bad dog']
         assert pm['cat'] == 'the best'
         assert pm['not_in_config'] == 'yeah'
+
+    ########################################################################
+
+    def test_link_params_queue( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/standard/standard.trove',
+            n = 100,
+            high = 10,
+            power = 0,
+        )
+
+        # Check
+        assert pm['n'] == 1000
+        assert pm['high'] == 1000
+        assert pm['power'] == 1

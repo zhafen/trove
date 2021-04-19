@@ -15,7 +15,7 @@ import galaxy_dive.utils.utilities as utilities
 ########################################################################
 
 
-class TroveManager( object ):
+class Manager( object ):
     '''Class for managing troves of data.'''
 
     @utilities.store_parameters

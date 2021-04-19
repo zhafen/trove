@@ -7,11 +7,11 @@ import numpy.testing as npt
 import os
 import unittest
 
-import galaxy_dive.data_management.trove_management as trove_management
+import trove.management as management
 
 ########################################################################
 
-data_dirs = [ './tests/data/trove_test_dir' ]
+data_dirs = [ './tests/data/manager_test_dir' ]
 file_format = 'test_{}_{}.dat'
 file_format2 = 'test_{}_{}_{}.dat'
 args_a = [ 'a', 'b', ]
@@ -21,12 +21,12 @@ args_c = [ 6, ]
 ########################################################################
 ########################################################################
 
-class TestTroveManagerInit( unittest.TestCase ):
+class TestManagerInit( unittest.TestCase ):
 
     def test_init( self ):
         '''Test that we can even initialize.'''
 
-        trove_manager = trove_management.TroveManager(
+        trove_manager = management.Manager(
             file_format,
             data_dirs,
             args_a,
@@ -43,11 +43,11 @@ class TestTroveManagerInit( unittest.TestCase ):
 ########################################################################
 ########################################################################
 
-class TestTroveManager( unittest.TestCase ):
+class TestManager( unittest.TestCase ):
 
     def setUp( self ):
 
-        self.trove_manager = trove_management.TroveManager(
+        self.trove_manager = management.Manager(
             file_format2,
             data_dirs,
             args_a,
@@ -62,12 +62,12 @@ class TestTroveManager( unittest.TestCase ):
         actual = self.trove_manager.combinations
 
         expected = [
-            ( './tests/data/trove_test_dir', 'a', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'a', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'a', 3, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 3, 6, ),
         ]
 
         self.assertEqual( expected, actual )
@@ -84,12 +84,12 @@ class TestTroveManager( unittest.TestCase ):
         actual = self.trove_manager.combinations
 
         expected = [
-            ( './tests/data/trove_test_dir', 'a', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'a', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'a', 3, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 3, 6, ),
         ]
 
         self.assertEqual( expected, actual )
@@ -99,17 +99,17 @@ class TestTroveManager( unittest.TestCase ):
         actual = self.trove_manager.combinations
 
         expected = [
-            ( './tests/data/trove_test_dir', 'a', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'a', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'a', 3, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 3, 6, ),
         ]
 
         self.assertEqual( expected, actual )
 
-        tm = trove_management.TroveManager(
+        tm = management.Manager(
             file_format2,
             [ 'a', 'b', ],
             [ 0, 1, ],
@@ -147,12 +147,12 @@ class TestTroveManager( unittest.TestCase ):
         actual = self.trove_manager.data_files
 
         expected = [
-            './tests/data/trove_test_dir/test_a_1_6.dat',
-            './tests/data/trove_test_dir/test_a_2_6.dat',
-            './tests/data/trove_test_dir/test_a_3_6.dat',
-            './tests/data/trove_test_dir/test_b_1_6.dat',
-            './tests/data/trove_test_dir/test_b_2_6.dat',
-            './tests/data/trove_test_dir/test_b_3_6.dat',
+            './tests/data/manager_test_dir/test_a_1_6.dat',
+            './tests/data/manager_test_dir/test_a_2_6.dat',
+            './tests/data/manager_test_dir/test_a_3_6.dat',
+            './tests/data/manager_test_dir/test_b_1_6.dat',
+            './tests/data/manager_test_dir/test_b_2_6.dat',
+            './tests/data/manager_test_dir/test_b_3_6.dat',
         ]
 
         self.assertEqual( expected, actual )
@@ -163,9 +163,9 @@ class TestTroveManager( unittest.TestCase ):
         actual = self.trove_manager.get_incomplete_combinations()
 
         expected = [
-            ( './tests/data/trove_test_dir', 'a', 2, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 1, 6, ),
-            ( './tests/data/trove_test_dir', 'b', 3, 6, ),
+            ( './tests/data/manager_test_dir', 'a', 2, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 1, 6, ),
+            ( './tests/data/manager_test_dir', 'b', 3, 6, ),
         ]
 
         self.assertEqual( expected, actual )
@@ -177,9 +177,9 @@ class TestTroveManager( unittest.TestCase ):
         actual = self.trove_manager.get_incomplete_data_files()
 
         expected = [
-            './tests/data/trove_test_dir/test_a_2_6.dat',
-            './tests/data/trove_test_dir/test_b_1_6.dat',
-            './tests/data/trove_test_dir/test_b_3_6.dat',
+            './tests/data/manager_test_dir/test_a_2_6.dat',
+            './tests/data/manager_test_dir/test_b_1_6.dat',
+            './tests/data/manager_test_dir/test_b_3_6.dat',
         ]
 
         self.assertEqual( expected, actual )
@@ -190,7 +190,7 @@ class TestTroveManager( unittest.TestCase ):
 
         actual = self.trove_manager.get_next_args_to_use()
 
-        expected = ( './tests/data/trove_test_dir', 'a', 2, 6, )
+        expected = ( './tests/data/manager_test_dir', 'a', 2, 6, )
 
         self.assertEqual( expected, actual )
 
@@ -199,11 +199,11 @@ class TestTroveManager( unittest.TestCase ):
     def test_get_next_args_to_use_skipped_args( self ):
 
         self.trove_manager.combinations_to_skip.append(
-            ( './tests/data/trove_test_dir', 'a', 2, 6, )
+            ( './tests/data/manager_test_dir', 'a', 2, 6, )
         )
 
         actual = self.trove_manager.get_next_args_to_use()
 
-        expected = ( './tests/data/trove_test_dir', 'b', 1, 6, )
+        expected = ( './tests/data/manager_test_dir', 'b', 1, 6, )
 
         self.assertEqual( expected, actual )
