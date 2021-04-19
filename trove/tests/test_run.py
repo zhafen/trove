@@ -1,4 +1,4 @@
-'''Testing for running the full pipeline
+'''Testing for running the full pipeline and executables.
 '''
 
 import h5py
@@ -7,6 +7,8 @@ import numpy.testing as npt
 import subprocess
 import time
 import unittest
+
+########################################################################
 
 class TestComplete( unittest.TestCase ):
 
@@ -56,5 +58,6 @@ class TestScript( unittest.TestCase ):
             './tests/example/built.config',
         ])
 
-        f = h5py.File( './tests/example/data/preoutput_for_built.hdf5', 'r' )
+        f = h5py.File( './tests/example/data/pre_output_for_built.hdf5', 'r' )
         assert len( f['raised_numbers'][...].size ) == 1000
+
