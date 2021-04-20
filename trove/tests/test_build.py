@@ -61,19 +61,19 @@ class TestConfigParser( unittest.TestCase ):
 
         actual = tcp.get_next_variation()
 
-        assert actual == ( 'identifier_A', 'identifier_A.troveflag' )
+        assert actual == ( 'identifier_A', 's01' )
 
     ########################################################################
 
     def test_get_next_variation_midway( self ):
 
         tcp = trove_build.ConfigParser(
-            './tests/examples/standard/standard.trove'
+            './tests/examples/midway/midway.trove'
         )
 
         actual = tcp.get_next_variation()
 
         assert actual == (
-            'this_is_also_an_identifier',
-            'this_is_also_an_identifier.troveflag'
+            'identifier_A',
+            's02'
         )

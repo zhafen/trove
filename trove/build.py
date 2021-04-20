@@ -76,10 +76,14 @@ class ConfigParser( configparser.ConfigParser ):
             self.read( fp )
 
         # Setup a trove manager
-        file_format = os.path.join( self.defaults()['data_dir'], '{}' )
+        file_format = os.path.join(
+            self.defaults()['data_dir'],
+            '{}',
+            '{}.troveflag'
+        )
         ids = list( self.variations.keys() )
-        flags = [ '{}.troveflag'.format( _ ) for _ in ids ]
-        self.manager = management.Manager( file_format, ids, flags )
+        scripts = list( self['SCRIPTS'].keys() )
+        self.manager = management.Manager( file_format, ids, scripts )
     
     ########################################################################
 

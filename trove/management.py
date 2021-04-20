@@ -49,9 +49,7 @@ class Manager( object ):
             Filename for a given combination of args.
         '''
 
-        filename = self.file_format.format( *args[1:] )
-
-        return os.path.join( args[0], filename )
+        return self.file_format.format( *args )
 
     ########################################################################
 
