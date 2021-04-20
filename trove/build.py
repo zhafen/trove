@@ -5,6 +5,8 @@ import configparser
 import copy
 import os
 
+import augment
+
 import trove.management as management
 
 ########################################################################
@@ -30,6 +32,7 @@ def link_params_to_config(
     # Identify which variation is next
     variation_args = tcp.get_next_variation()
     variation = variation_args[0]
+    pm['used_data_dir'] = tcp.get_next_data_dir()
 
     # Update loop
     for key, item in pm.items():
@@ -45,6 +48,7 @@ def link_params_to_config(
 
 class ConfigParser( configparser.ConfigParser ):
 
+    @augment.store_parameters
     def __init__(
         self,
         fp = None,
@@ -103,15 +107,54 @@ class ConfigParser( configparser.ConfigParser ):
         super().read( *args, **kwargs )
 
         # Parse for variations on the parameters
-        self.sections = [ 'DEFAULT', 'SCRIPTS' ]
+        self.special_sections = [ 'DEFAULT', 'SCRIPTS' ]
         self.variations = []
         for key in copy.deepcopy( self.keys() ):
-            if key in self.sections:
+            if key in self.special_sections:
                 continue
             self.variations.append( key )
 
+        # When no variations, just use the defaults
+        if len( self.variations ) == 0:
+            self.variations = [ 'DEFAULT', ]
+
+        # Check that the config file is formatted correctly
+        if len( self.sections() ) == 0:
+            raise OSError(
+                'Config at {} does not contain '.format( self.fp ) + \
+                'any sections.\nPlease check the file/file location.'
+            )
+        for key in self.special_sections:
+            if key not in self.sections():
+
+                # Special rules for the default section
+                if key == 'DEFAULT' and len( self.defaults() ) != 0:
+                    continue
+
+                raise NameError(
+                    'Config at {} does not contain '.format( self.fp ) + \
+                    'required section {}.\n'.format( key )
+                )
+
     ########################################################################
 
-    def get_next_variation( self, when_done='return_last' ):
+    def get_next_variation( self, *args, **kwargs ):
 
-        return self.manager.get_next_args_to_use()
+        return self.manager.get_next_args_to_use( *args, **kwargs )
+
+    def get_next_data_dir( self, *args, **kwargs ):
+        '''Get the next data dir, and create it if it doesn't exist.
+        '''
+
+        next_dir = os.path.dirname(
+            self.manager.get_incomplete_data_files()[0]
+        )
+
+        if not os.path.exists( next_dir ):
+            print(
+                'No data directory at {}\n'.format( next_dir ) + \
+                'Creating one.'
+            )
+            os.makedirs( next_dir, exist_ok=True )
+
+        return next_dir

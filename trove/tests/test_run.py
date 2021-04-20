@@ -4,7 +4,10 @@
 import h5py
 import numpy as np
 import numpy.testing as npt
+import os
+import shutil
 import subprocess
+import sys
 import time
 import unittest
 
@@ -50,14 +53,29 @@ class TestExecutable( unittest.TestCase ):
 
 class TestScript( unittest.TestCase ):
 
+    def tearDown( self ):
+
+        data_dir = './tests/data/examples/standard/identifier_A' 
+        if os.path.exists( data_dir ):
+            shutil.rmtree( data_dir )
+
+    ########################################################################
+
     def test_script( self ):
 
-        subprocess.run([
-            'python',
-            './tests/example/pre.py',
-            './tests/example/built.config',
-        ])
+        sp = subprocess.run(
+            [
+                sys.executable,
+                './tests/examples/standard/pre.py',
+                './tests/examples/standard/standard.trove',
+            ],
+            capture_output = True,
+        )
+        print( 'STDOUT:\n' + sp.stdout.decode( 'utf-8' ) )
+        print( 'STDERR:\n' + sp.stderr.decode( 'utf-8' ) )
 
-        f = h5py.File( './tests/example/data/pre_output_for_built.hdf5', 'r' )
-        assert len( f['raised_numbers'][...].size ) == 1000
+        fp = './tests/data/examples/standard/identifier_A/pre.hdf5'
+        f = h5py.File( fp, 'r' )
+        assert f['numbers'][...].size == 1000
+
 

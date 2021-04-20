@@ -5,8 +5,8 @@
 # parameters used in the analysis.
 
 # Filetree parameters
-code_dir = ./tests/examples/standard
 data_dir = ./tests/data/examples/standard
+code_dir = ./tests/examples/standard
 processed_data_dir = ${data_dir}
 figure_dir = ./tests/figures
 
@@ -39,6 +39,7 @@ s02 = ${code_dir}/main.py
 # Parameter Variations
 ########################################################################
 # These sections are variations on the parameters to explore.
+# Each will create a trove of data.
 # The section name should be the identifier you would
 # like to use for that set of parameters.
 
