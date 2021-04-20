@@ -12,8 +12,8 @@ import trove.management as management
 ########################################################################
 
 data_dirs = [ './tests/data/manager_test_dir', ]
-file_format = 'test_{}_{}.dat'
-file_format2 = 'test_{}_{}_{}.dat'
+file_format = '{}/test_{}_{}.dat'
+file_format2 = '{}/test_{}_{}_{}.dat'
 args_a = [ 'a', 'b', ]
 args_b = [ 1, 2, 3, ]
 args_c = [ 6, ]
