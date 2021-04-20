@@ -27,15 +27,17 @@ def link_params_to_config(
     # Read the config
     tcp = ConfigParser( config_fp )
 
+    # Identify which variation is next
+    variation_args = tcp.get_next_variation()
+    variation = variation_args[0]
+
     # Update loop
     for key, item in pm.items():
 
         # Loop through config sections
-        for ckey, citem in tcp.items():
-
-            # Update value
-            if key in citem:
-                pm[key] = ast.literal_eval( citem[key] )
+        value_str = tcp.get( variation, key, fallback=None )
+        if value_str is not None:
+            pm[key] = ast.literal_eval( value_str )
 
     return pm
 
@@ -72,16 +74,17 @@ class ConfigParser( configparser.ConfigParser ):
         )
 
         # Read
+        self.sections = [ 'DEFAULT', 'SCRIPTS' ]
         if fp is not None:
             self.read( fp )
 
         # Setup a trove manager
-        file_format = os.path.join(
-            self.defaults()['data_dir'],
-            '{}',
-            '{}.troveflag'
-        )
-        ids = list( self.variations.keys() )
+        file_format = []
+        if self.has_option( 'DEFAULT', 'data_dir' ):
+            file_format.append( self.get( 'DEFAULT', 'data_dir' ) )
+        file_format += [ '{}', '{}.troveflag' ]
+        file_format = os.path.join( *file_format )
+        ids = list( self.variations )
         scripts = list( self['SCRIPTS'].keys() )
         self.manager = management.Manager( file_format, ids, scripts )
     
@@ -101,13 +104,11 @@ class ConfigParser( configparser.ConfigParser ):
         super().read( *args, **kwargs )
 
         # Parse for variations on the parameters
-        self.variations = {}
-        for key, item in copy.deepcopy( self.items() ):
-
-            # Identify variations
-            if key[:3] == 'ID ':
-                self.variations[key[3:]] = item
-                self.remove_section( key )
+        self.variations = []
+        for key in copy.deepcopy( self.keys() ):
+            if key in self.sections:
+                continue
+            self.variations.append( key )
 
     ########################################################################
 

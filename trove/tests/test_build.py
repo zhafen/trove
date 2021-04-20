@@ -22,6 +22,7 @@ class TestLinkParams( unittest.TestCase ):
             dog = False,
             cat = 'not best',
             not_in_config = 'yeah',
+            errors = 100,
             **{ 'bad dog': False, },
         )
 
@@ -31,6 +32,7 @@ class TestLinkParams( unittest.TestCase ):
         assert not pm['bad dog']
         assert pm['cat'] == 'the best'
         assert pm['not_in_config'] == 'yeah'
+        assert pm['errors'] == None
 
     ########################################################################
 

@@ -5,3 +5,7 @@ bad dog = False
 cat = 'the best'
 lizard = 'not bad'
 bird = 101011
+errors = None
+
+[SCRIPTS]
+s01 = 'does_not_exist.py'
