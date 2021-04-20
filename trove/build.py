@@ -74,7 +74,6 @@ class ConfigParser( configparser.ConfigParser ):
         )
 
         # Read
-        self.sections = [ 'DEFAULT', 'SCRIPTS' ]
         if fp is not None:
             self.read( fp )
 
@@ -104,6 +103,7 @@ class ConfigParser( configparser.ConfigParser ):
         super().read( *args, **kwargs )
 
         # Parse for variations on the parameters
+        self.sections = [ 'DEFAULT', 'SCRIPTS' ]
         self.variations = []
         for key in copy.deepcopy( self.keys() ):
             if key in self.sections:
