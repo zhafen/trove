@@ -1,4 +1,4 @@
-[DEFAULTS]
+[DEFAULT]
 a = 1
 dog = True
 bad dog = False
