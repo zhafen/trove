@@ -3,6 +3,9 @@
 import ast
 import configparser
 import copy
+import os
+
+import trove.management as management
 
 ########################################################################
 
@@ -22,7 +25,7 @@ def link_params_to_config(
     '''
 
     # Read the config
-    tcp = TroveConfigParser( config_fp )
+    tcp = ConfigParser( config_fp )
 
     # Update loop
     for key, item in pm.items():
@@ -44,8 +47,8 @@ class ConfigParser( configparser.ConfigParser ):
         self,
         fp = None,
         empty_lines_in_values = False,
-            *args,
-            **kwargs
+        *args,
+        **kwargs
     ):
         '''Same init as configparser.ConfigParser, but includes the read step.
 
@@ -61,14 +64,22 @@ class ConfigParser( configparser.ConfigParser ):
             TroveConfigParser
         '''
 
+        # Super
         super().__init__(
             empty_lines_in_values = empty_lines_in_values,
             *args,
             **kwargs
         )
 
+        # Read
         if fp is not None:
             self.read( fp )
+
+        # Setup a trove manager
+        file_format = os.path.join( self.defaults()['data_dir'], '{}' )
+        ids = list( self.variations.keys() )
+        flags = [ '{}.troveflag'.format( _ ) for _ in ids ]
+        self.manager = management.Manager( file_format, ids, flags )
     
     ########################################################################
 
@@ -96,3 +107,6 @@ class ConfigParser( configparser.ConfigParser ):
 
     ########################################################################
 
+    def get_next_variation( self, when_done='return_last' ):
+
+        return self.manager.get_next_args_to_use()

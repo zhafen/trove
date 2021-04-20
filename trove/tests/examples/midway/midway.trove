@@ -1,6 +1,6 @@
 [DEFAULT]
-code_dir = ./tests/examples/standard
-data_dir = ./tests/data/examples/standard
+code_dir = ./tests/examples/midway
+data_dir = ./tests/data/examples/midway
 processed_data_dir = ${data_dir}
 figure_dir = ./tests/figures
 seed = 12345

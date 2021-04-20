@@ -48,3 +48,32 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['n'] == 1000
         assert pm['high'] == 1000
         assert pm['power'] == 1
+
+########################################################################
+
+class TestConfigParser( unittest.TestCase ):
+
+    def test_get_next_variation( self ):
+
+        tcp = trove_build.ConfigParser(
+            './tests/examples/standard/standard.trove'
+        )
+
+        actual = tcp.get_next_variation()
+
+        assert actual == ( 'identifier_A', 'identifier_A.troveflag' )
+
+    ########################################################################
+
+    def test_get_next_variation_midway( self ):
+
+        tcp = trove_build.ConfigParser(
+            './tests/examples/standard/standard.trove'
+        )
+
+        actual = tcp.get_next_variation()
+
+        assert actual == (
+            'this_is_also_an_identifier',
+            'this_is_also_an_identifier.troveflag'
+        )

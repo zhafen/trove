@@ -9,7 +9,7 @@
 import itertools
 import os
 
-import galaxy_dive.utils.utilities as utilities
+import augment
 
 ########################################################################
 ########################################################################
@@ -18,7 +18,7 @@ import galaxy_dive.utils.utilities as utilities
 class Manager( object ):
     '''Class for managing troves of data.'''
 
-    @utilities.store_parameters
+    @augment.store_parameters
     def __init__( self, file_format, *args ):
         '''Constructor.
 
