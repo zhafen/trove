@@ -39,6 +39,12 @@ class TestComplete( unittest.TestCase ):
 
 class TestExecutable( unittest.TestCase ):
 
+    def tearDown( self ):
+
+        data_dir = './tests/data/examples/standard/identifier_A' 
+        if os.path.exists( data_dir ):
+            shutil.rmtree( data_dir )
+
     def test_executable( self ):
 
         subprocess.run([
