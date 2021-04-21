@@ -42,11 +42,12 @@ class TestExecutable( unittest.TestCase ):
     def test_executable( self ):
 
         subprocess.run([
-            './tests/example/built_exec.sh',
-            './tests/example/built.config',
+            './execute.py',
+            './tests/examples/standard/standard.trove',
         ])
 
-        f = h5py.File( './tests/example/data/output_for_built.hdf5', 'r' )
+        fp = './tests/examples/data/standard/identifier_A/main.hdf5'
+        f = h5py.File( fp, 'r' )
         assert len( f['raised_numbers'][...].size ) == 1000
 
 ########################################################################

@@ -16,7 +16,7 @@ def save_base_numbers( filepath, numbers ):
 if __name__ == '__main__':
 
     # Params
-    # (as these would usually look)
+    # (how the parameters would usually look)
     pm = dict(
         seed = 123,
         low = 0,
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     )
 
     # TROVE PARAMS
-    # (as these would look wrapped in a trove call)
+    # (wrapping the parameters in a trove call)
     import trove.build
     import sys
     pm = trove.build.link_params_to_config(
