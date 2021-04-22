@@ -11,6 +11,8 @@ import sys
 import time
 import unittest
 
+import trove.execute as execute
+
 ########################################################################
 
 class TestComplete( unittest.TestCase ):
@@ -41,9 +43,34 @@ class TestExecutable( unittest.TestCase ):
 
     def tearDown( self ):
 
-        data_dir = './tests/data/examples/standard/identifier_A' 
-        if os.path.exists( data_dir ):
-            shutil.rmtree( data_dir )
+        data_dirs = [
+            './tests/data/examples/standard/identifier_A' ,
+            './tests/data/examples/standard/this_is_also_an_identifier' ,
+        ]
+        for data_dir in data_dirs:
+            if os.path.exists( data_dir ):
+                shutil.rmtree( data_dir )
+
+    ########################################################################
+
+    def test_executable_fn( self ):
+
+        execute.run( './tests/examples/standard/standard.trove' )
+
+        fp = './tests/data/examples/standard/identifier_A/main.hdf5'
+        f = h5py.File( fp, 'r' )
+        assert f['raised_numbers'][...].size == 1000
+
+        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+            for script in [ 's01', 's02' ]:
+
+                ofp = './tests/data/examples/standard/{}/{}.troveflag'.format(
+                    ident,
+                    script,
+                )
+                assert os.path.exists( ofp )
+
+    ########################################################################
 
     def test_executable( self ):
 
@@ -55,6 +82,37 @@ class TestExecutable( unittest.TestCase ):
         fp = './tests/examples/data/standard/identifier_A/main.hdf5'
         f = h5py.File( fp, 'r' )
         assert len( f['raised_numbers'][...].size ) == 1000
+
+        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+            for script in [ 's01', 's02' ]:
+
+                ofp = './tests/examples/data/standard/{}/{}.troveflag'.format(
+                    ident,
+                    script,
+                )
+                assert os.path.exists( ofp )
+
+    ########################################################################
+
+    def test_executable_midway( self ):
+
+        subprocess.run([
+            './execute.py',
+            './tests/examples/midway/midway.trove',
+        ])
+
+        fp = './tests/examples/data/midway/identifier_A/main.hdf5'
+        f = h5py.File( fp, 'r' )
+        assert len( f['raised_numbers'][...].size ) == 1000
+
+        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+            for script in [ 's01', 's02' ]:
+
+                ofp = './tests/examples/data/standard/{}/{}.troveflag'.format(
+                    ident,
+                    script,
+                )
+                assert os.path.exists( ofp )
 
 ########################################################################
 

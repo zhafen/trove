@@ -35,12 +35,16 @@ def link_params_to_config(
     pm['used_data_dir'] = tcp.get_next_data_dir()
 
     # Update loop
-    for key, item in pm.items():
+    for key in tcp.options( variation ):
 
         # Loop through config sections
         value_str = tcp.get( variation, key, fallback=None )
         if value_str is not None:
-            pm[key] = ast.literal_eval( value_str )
+            # We'll try to evaluate the argument, but fallback to the str rep
+            try:
+                pm[key] = ast.literal_eval( value_str )
+            except SyntaxError:
+                pm[key] = value_str
 
     return pm
 
@@ -53,6 +57,7 @@ class ConfigParser( configparser.ConfigParser ):
         self,
         fp = None,
         empty_lines_in_values = False,
+        interpolation = configparser.ExtendedInterpolation(),
         *args,
         **kwargs
     ):
@@ -73,6 +78,7 @@ class ConfigParser( configparser.ConfigParser ):
         # Super
         super().__init__(
             empty_lines_in_values = empty_lines_in_values,
+            interpolation = interpolation,
             *args,
             **kwargs
         )
@@ -88,7 +94,10 @@ class ConfigParser( configparser.ConfigParser ):
         file_format += [ '{}', '{}.troveflag' ]
         file_format = os.path.join( *file_format )
         ids = list( self.variations )
-        scripts = list( self['SCRIPTS'].keys() )
+        scripts = [
+            _ for _ in self['SCRIPTS'].keys()
+            if _ not in self.defaults()
+        ]
         self.manager = management.Manager( file_format, ids, scripts )
     
     ########################################################################
@@ -138,9 +147,13 @@ class ConfigParser( configparser.ConfigParser ):
 
     ########################################################################
 
-    def get_next_variation( self, *args, **kwargs ):
+    def get_next_variation( self, when_done='done_flag', *args, **kwargs ):
 
-        return self.manager.get_next_args_to_use( *args, **kwargs )
+        return self.manager.get_next_args_to_use(
+            when_done = when_done,
+            *args,
+            **kwargs
+        )
 
     def get_next_data_dir( self, *args, **kwargs ):
         '''Get the next data dir, and create it if it doesn't exist.
@@ -158,3 +171,7 @@ class ConfigParser( configparser.ConfigParser ):
             os.makedirs( next_dir, exist_ok=True )
 
         return next_dir
+
+    def get_flag_file( self, *args ):
+
+        return self.manager.get_file( *args )

@@ -183,5 +183,7 @@ class Manager( object ):
                 return self.combinations[-1]
             elif when_done == 'return_0':
                 return 0
+            else:
+                return when_done
 
         return incomplete_combinations[0]
