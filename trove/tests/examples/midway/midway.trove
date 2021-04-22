@@ -5,8 +5,8 @@
 # parameters used in the analysis.
 
 # Filetree parameters
-code_dir = ./tests/examples/midway
 data_dir = ./tests/data/examples/midway
+code_dir = ./tests/examples/standard
 processed_data_dir = ${data_dir}
 figure_dir = ./tests/figures
 
@@ -17,6 +17,7 @@ seed = 12345
 n = 1000
 low = 0
 high = 1000
+power = 1
 
 ########################################################################
 [SCRIPTS]
@@ -38,11 +39,11 @@ s02 = ${code_dir}/main.py
 # Parameter Variations
 ########################################################################
 # These sections are variations on the parameters to explore.
+# Each will create a trove of data.
 # The section name should be the identifier you would
 # like to use for that set of parameters.
 
 [identifier_A]
-power = 2
 
 [this_is_also_an_identifier]
 power = 3

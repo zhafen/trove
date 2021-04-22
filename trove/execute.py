@@ -5,6 +5,7 @@ import os
 import pathlib
 import subprocess
 import sys
+import time
 import warnings
 
 import trove.build as build
@@ -21,6 +22,7 @@ def run( config_fp, max_loops=1000, *args, **kwargs ):
 
     # Start run loop
     loop_count = 0
+    start_time = time.time()
     while True:
 
         # Identify next to run
@@ -32,7 +34,9 @@ def run( config_fp, max_loops=1000, *args, **kwargs ):
             print(
                 '\n####################################' + \
                 '####################################\n' + \
-                'trove finished!' + \
+                'trove finished in {:.3g} seconds!'.format(
+                    time.time() - start_time 
+                ) + \
                 '\n####################################' + \
                 '####################################\n'
             )
@@ -50,6 +54,7 @@ def run( config_fp, max_loops=1000, *args, **kwargs ):
         current_flag_file = tcp.get_flag_file( *next_variation )
 
         # Run
+        loop_time = time.time()
         print(
             '\n####################################' + \
             '####################################\n' + \
@@ -70,7 +75,10 @@ def run( config_fp, max_loops=1000, *args, **kwargs ):
         print(
             '\n----------------------------------' + \
             '------------------------------------' +
-            '\nFinished running {}\n'.format( current_script ) + \
+            '\nFinished running {} in {:.3g} seconds\n'.format(
+                current_script,
+                time.time() - loop_time,
+            ) + \
             '    Variation: {}\n'.format( next_variation[:-1] ) + \
             '####################################' + \
             '####################################\n'

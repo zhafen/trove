@@ -15,30 +15,6 @@ import trove.execute as execute
 
 ########################################################################
 
-class TestComplete( unittest.TestCase ):
-
-    def test_example( self ):
-
-        # Run
-        subprocess.run( [ './run.py', './tests/example/trove.config' ] )
-        subprocess.run( [ './run.py', './tests/example/trove.config' ] )
-        subprocess.run( [ './run.py', './tests/example/trove.config' ] )
-        subprocess.run( [ './run.py', './tests/example/trove.config' ] )
-        # time.sleep( 5 )
-
-        # Check results
-        fps = [
-            './examples/data/power2/high10' ,
-            './examples/data/power2/high100' ,
-            './examples/data/power3/high10' ,
-            './examples/data/power3/high100' ,
-        ]
-        for fp in fps:
-            f = h5py.File( fp, 'r' )
-            assert len( f['raised_numbers'][...].size ) == 1000
-
-########################################################################
-
 class TestExecutable( unittest.TestCase ):
 
     def tearDown( self ):
@@ -46,6 +22,7 @@ class TestExecutable( unittest.TestCase ):
         data_dirs = [
             './tests/data/examples/standard/identifier_A' ,
             './tests/data/examples/standard/this_is_also_an_identifier' ,
+            './tests/data/examples/midway/this_is_also_an_identifier' ,
         ]
         for data_dir in data_dirs:
             if os.path.exists( data_dir ):
@@ -102,18 +79,21 @@ class TestExecutable( unittest.TestCase ):
     def test_executable_midway( self ):
 
         subprocess.run([
+            sys.executable,
             './execute.py',
             './tests/examples/midway/midway.trove',
         ])
 
-        fp = './tests/examples/data/midway/identifier_A/main.hdf5'
+        # Check
+        fp = './tests/data/examples/midway/this_is_also_an_identifier/main.hdf5'
         f = h5py.File( fp, 'r' )
-        assert len( f['raised_numbers'][...].size ) == 1000
+        assert f['raised_numbers'][...].size == 1000
 
+        # Check more
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
             for script in [ 's01', 's02' ]:
 
-                ofp = './tests/examples/data/standard/{}/{}.troveflag'.format(
+                ofp = './tests/data/examples/midway/{}/{}.troveflag'.format(
                     ident,
                     script,
                 )
