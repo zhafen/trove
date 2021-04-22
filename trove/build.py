@@ -32,10 +32,15 @@ def link_params_to_config(
     # Identify which variation is next
     variation_args = tcp.get_next_variation()
     variation = variation_args[0]
+    # Account for different formatting
+    if variation == 'DEFAULT':
+        options = tcp.defaults()
+    else:
+        options = tcp.options( variation )
     pm['used_data_dir'] = tcp.get_next_data_dir()
 
     # Update loop
-    for key in tcp.options( variation ):
+    for key in options:
 
         # Loop through config sections
         value_str = tcp.get( variation, key, fallback=None )

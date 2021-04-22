@@ -76,6 +76,6 @@ class TestConfigParser( unittest.TestCase ):
         actual = tcp.get_next_variation()
 
         assert actual == (
-            'identifier_A',
-            's02'
+            'this_is_also_an_identifier',
+            's01'
         )
