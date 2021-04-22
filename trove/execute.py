@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Tools for running the pipeline.'''
 
 import os

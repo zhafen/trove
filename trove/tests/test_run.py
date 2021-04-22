@@ -57,10 +57,12 @@ class TestExecutable( unittest.TestCase ):
 
         execute.run( './tests/examples/standard/standard.trove' )
 
+        # Check
         fp = './tests/data/examples/standard/identifier_A/main.hdf5'
         f = h5py.File( fp, 'r' )
         assert f['raised_numbers'][...].size == 1000
 
+        # Check more
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
             for script in [ 's01', 's02' ]:
 
@@ -75,18 +77,21 @@ class TestExecutable( unittest.TestCase ):
     def test_executable( self ):
 
         subprocess.run([
+            sys.executable,
             './execute.py',
             './tests/examples/standard/standard.trove',
         ])
 
-        fp = './tests/examples/data/standard/identifier_A/main.hdf5'
+        # Check
+        fp = './tests/data/examples/standard/identifier_A/main.hdf5'
         f = h5py.File( fp, 'r' )
-        assert len( f['raised_numbers'][...].size ) == 1000
+        assert f['raised_numbers'][...].size == 1000
 
+        # Check more
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
             for script in [ 's01', 's02' ]:
 
-                ofp = './tests/examples/data/standard/{}/{}.troveflag'.format(
+                ofp = './tests/data/examples/standard/{}/{}.troveflag'.format(
                     ident,
                     script,
                 )
