@@ -12,7 +12,16 @@ import trove.build as build
 
 ########################################################################
 
-def run( config_fp, max_loops=1000, *args, **kwargs ):
+def run( config_fp, max_loops=1000 ):
+    '''Run the trove pipeline specified in the given config.
+
+    Args:
+        config_fp (str):
+            Configuration file to use.
+
+        max_loops (int):
+            Maximum loops before forcibly exiting.
+    '''
 
     # As a precaution
     config_fp = os.path.abspath( config_fp )

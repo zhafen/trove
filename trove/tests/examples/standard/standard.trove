@@ -33,7 +33,7 @@ s01 = ${code_dir}/pre.py
 s02 = ${code_dir}/main.py
 
 # Post-processing
-# nb03 = ${code_dir}/post.ipnb
+nb03 = ${code_dir}/post.ipynb
 
 ########################################################################
 # Parameter Variations

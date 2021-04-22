@@ -23,16 +23,13 @@ class TestExecutable( unittest.TestCase ):
             './tests/data/examples/standard/identifier_A' ,
             './tests/data/examples/standard/this_is_also_an_identifier' ,
             './tests/data/examples/midway/this_is_also_an_identifier' ,
+            './tests/figures',
         ]
         for data_dir in data_dirs:
             if os.path.exists( data_dir ):
                 shutil.rmtree( data_dir )
 
-    ########################################################################
-
-    def test_executable_fn( self ):
-
-        execute.run( './tests/examples/standard/standard.trove' )
+    def check():
 
         # Check
         fp = './tests/data/examples/standard/identifier_A/main.hdf5'
@@ -48,6 +45,19 @@ class TestExecutable( unittest.TestCase ):
                     script,
                 )
                 assert os.path.exists( ofp )
+
+        # Check figures
+        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+            ffp = './tests/figures/last_digits_{}.pdf'.format( ident )
+            assert os.path.exists( ffp )
+
+    ########################################################################
+
+    def test_executable_fn( self ):
+
+        execute.run( './tests/examples/standard/standard.trove' )
+
+        check()
 
     ########################################################################
 
