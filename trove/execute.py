@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 '''Tools for running the pipeline.'''
 
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
 import os
 import pathlib
 import subprocess
@@ -23,7 +25,7 @@ def run( config_fp, max_loops=1000 ):
             Maximum loops before forcibly exiting.
     '''
 
-    # As a precaution
+    # As a precaution, convert to abso
     config_fp = os.path.abspath( config_fp )
 
     # Load the config
@@ -59,10 +61,11 @@ def run( config_fp, max_loops=1000 ):
             break
 
         # Get filepaths
-        current_script = tcp.get( 'SCRIPTS', next_variation[-1] )
+        script_id = next_variation[-1]
+        current_script = tcp.get( 'SCRIPTS', script_id )
         current_flag_file = tcp.get_flag_file( *next_variation )
 
-        # Run
+        # Run start announcement
         loop_time = time.time()
         print(
             '\n####################################' + \
@@ -72,12 +75,12 @@ def run( config_fp, max_loops=1000 ):
             '\n----------------------------------' + \
             '------------------------------------\n'
         )
-        sp = subprocess.run(
-            [
-                sys.executable,
-                current_script,
-                config_fp,
-            ]
+
+        # Run
+        run_output = RUN_FN_MAPPING[script_id.split( '.' )[0]](
+            current_script,
+            config_fp,
+            tcp.get_next_data_dir(),
         )
 
         # When done running mark as done
@@ -93,6 +96,78 @@ def run( config_fp, max_loops=1000 ):
             '####################################\n'
         )
         pathlib.Path( current_flag_file ).touch()
+
+########################################################################
+
+def run_python( script_fp, config_fp, output_dir ):
+    '''Code for running a python program.
+
+    Args:
+        script_fp (str):
+            Python script to run.
+
+        config_fp (str):
+            Config filepath, passed as a commandline arg to the script.
+
+        output_dir (str):
+            Where to store any products from running the script.
+            Not currently used, but included for compatibility with other
+            run functions.
+
+    Returns:
+        subprocess.SubProcess:
+            Subprocess output.
+    '''
+
+    sp = subprocess.run(
+        [
+            sys.executable,
+            script_fp,
+            config_fp,
+        ]
+    )
+
+    return sp
+
+def run_python_notebook( script_fp, config_fp, output_dir ):
+    '''Code for running a python notebook.
+
+    Args:
+        script_fp (str):
+            Python script to run.
+
+        config_fp (str):
+            Config filepath, passed as a commandline arg to the script.
+
+        output_dir (str):
+            Where to store any products from running the script.
+
+    Returns:
+        subprocess.SubProcess:
+            Subprocess output.
+    '''
+
+    # Read
+    with open( script_fp ) as f:
+        nb = nbformat.read( f, as_version=4 )
+
+    # Run
+    ep = ExecutePreprocessor( timeout=600 )
+    ep.preprocess( nb, {'metadata': {'path': os.getcwd() }} )
+
+    # Save executed notebook
+    executed_filename = 'executed_' + os.path.basename( script_fp )
+    executed_fp = os.path.join( output_dir,  executed_filename )
+    with open( executed_fp, 'w', encoding='utf-8' ) as f:
+        nbformat.write( nb, f )
+
+    return nb
+
+RUN_FN_MAPPING = {
+    'py': run_python,
+    'nb': run_python_notebook,
+}
+
 
 ########################################################################
 

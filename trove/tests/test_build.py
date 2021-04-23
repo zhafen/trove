@@ -63,7 +63,7 @@ class TestConfigParser( unittest.TestCase ):
 
         actual = tcp.get_next_variation()
 
-        assert actual == ( 'identifier_A', 's01' )
+        assert actual == ( 'identifier_A', 'py.1' )
 
     ########################################################################
 
@@ -77,5 +77,5 @@ class TestConfigParser( unittest.TestCase ):
 
         assert actual == (
             'this_is_also_an_identifier',
-            's01'
+            'py.1'
         )

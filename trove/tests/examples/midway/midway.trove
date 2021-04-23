@@ -9,6 +9,9 @@ data_dir = ./tests/data/examples/midway
 code_dir = ./tests/examples/standard
 processed_data_dir = ${data_dir}
 figure_dir = ./tests/figures
+# Some handling of relative paths is included
+# (and is necessary for pre-built examples such as this one)
+# but absolute paths are encouraged.
 
 # Overall analysis parameters
 seed = 12345
@@ -27,13 +30,13 @@ power = 1
 # The prefix determines how the code will be handled.
 
 # Preprocessing
-s01 = ${code_dir}/pre.py
+py.1 = ${code_dir}/pre.py
 
 # Main executable
-s02 = ${code_dir}/main.py
+py.2 = ${code_dir}/main.py
 
 # Post-processing
-# nb03 = ${code_dir}/post.ipnb
+nb.3 = ./tests/examples/midway/post.ipynb
 
 ########################################################################
 # Parameter Variations

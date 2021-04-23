@@ -29,7 +29,7 @@ class TestExecutable( unittest.TestCase ):
             if os.path.exists( data_dir ):
                 shutil.rmtree( data_dir )
 
-    def check():
+    def check( self ):
 
         # Check
         fp = './tests/data/examples/standard/identifier_A/main.hdf5'
@@ -38,7 +38,7 @@ class TestExecutable( unittest.TestCase ):
 
         # Check more
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
-            for script in [ 's01', 's02' ]:
+            for script in [ 'py.1', 'py.2' ]:
 
                 ofp = './tests/data/examples/standard/{}/{}.troveflag'.format(
                     ident,
@@ -57,7 +57,7 @@ class TestExecutable( unittest.TestCase ):
 
         execute.run( './tests/examples/standard/standard.trove' )
 
-        check()
+        self.check()
 
     ########################################################################
 
@@ -76,7 +76,7 @@ class TestExecutable( unittest.TestCase ):
 
         # Check more
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
-            for script in [ 's01', 's02' ]:
+            for script in [ 'py.1', 'py.2' ]:
 
                 ofp = './tests/data/examples/standard/{}/{}.troveflag'.format(
                     ident,
@@ -101,7 +101,7 @@ class TestExecutable( unittest.TestCase ):
 
         # Check more
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
-            for script in [ 's01', 's02' ]:
+            for script in [ 'py.1', 'py.2' ]:
 
                 ofp = './tests/data/examples/midway/{}/{}.troveflag'.format(
                     ident,
