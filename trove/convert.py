@@ -1,6 +1,7 @@
 '''Tools for converting existing code to a trove-compatible format.'''
 import os
 import pathlib
+import sys
 
 import trove.config_parser as config_parser
 

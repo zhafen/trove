@@ -2,6 +2,7 @@
 import glob
 import os
 import shutil
+import sys
 
 import trove.config_parser as config_parser
 
