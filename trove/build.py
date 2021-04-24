@@ -32,6 +32,7 @@ def link_params_to_config(
     else:
         options = tcp.options( variation )
     pm['data_dir'] = tcp.get_next_data_dir()
+    pm['variation'] = variation
 
     # Update loop
     for key in options:
