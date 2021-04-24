@@ -12,7 +12,7 @@ pm = trove.build.link_params_to_config(
 
 # Load and process data
 filepath = os.path.join(
-    pm['used_data_dir'],
+    pm['data_dir'],
     'pre.hdf5',
 )
 f = h5py.File( filepath, 'r' )
@@ -23,7 +23,7 @@ raised_numbers = numbers ** pm['power']
 
 # Save
 save_filepath = os.path.join(
-    pm['used_data_dir'],
+    pm['data_dir'],
     'main.hdf5',
 )
 g = h5py.File( save_filepath, 'w' )

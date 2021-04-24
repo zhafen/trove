@@ -37,7 +37,7 @@ if __name__ == '__main__':
     np.random.seed( pm['seed'] )
     numbers = generate_base_numbers( pm['low'], pm['high'], pm['n'] )
     filepath = os.path.join(
-        pm['used_data_dir'],
+        pm['data_dir'],
         'pre.hdf5',
     )
     save_base_numbers( filepath, numbers )

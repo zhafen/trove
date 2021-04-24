@@ -37,7 +37,7 @@ def link_params_to_config(
         options = tcp.defaults()
     else:
         options = tcp.options( variation )
-    pm['used_data_dir'] = tcp.get_next_data_dir()
+    pm['data_dir'] = tcp.get_next_data_dir()
 
     # Update loop
     for key in options:
@@ -94,8 +94,8 @@ class ConfigParser( configparser.ConfigParser ):
 
         # Setup a trove manager
         file_format = []
-        if self.has_option( 'DEFAULT', 'data_dir' ):
-            file_format.append( self.get( 'DEFAULT', 'data_dir' ) )
+        if self.has_option( 'DEFAULT', 'root_data_dir' ):
+            file_format.append( self.get( 'DEFAULT', 'root_data_dir' ) )
         file_format += [ '{}', '{}.troveflag' ]
         file_format = os.path.join( *file_format )
         ids = list( self.variations )

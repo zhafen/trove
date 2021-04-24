@@ -5,9 +5,8 @@
 # parameters used in the analysis.
 
 # Filetree parameters
-data_dir = ./tests/data/examples/midway
+root_data_dir = ./tests/data/examples/midway
 code_dir = ./tests/examples/standard
-processed_data_dir = ${data_dir}
 figure_dir = ./tests/figures
 # Some handling of relative paths is included
 # (and is necessary for pre-built examples such as this one)
