@@ -26,9 +26,9 @@ if __name__ == '__main__':
 
     # TROVE PARAMS
     # (wrapping the parameters in a trove call)
-    import trove.build
+    import trove
     import sys
-    pm = trove.build.link_params_to_config(
+    pm = trove.link_params_to_config(
         config_fp = sys.argv[1],
         **pm
     )
