@@ -1,27 +1,29 @@
-from jug import TaskGenerator
+import jug
+import numpy as np
+import h5py
+import os
+from time import sleep
 
-@TaskGenerator
 def is_prime(n):
-    from time import sleep
 
     # Sleep for 1 second, this runs too fast and is not a good demo
-    sleep(1.)
+    sleep(0.25)
     for j in range(2, n - 1):
         if (n % j) == 0:
             return False
     return True
 
-@TaskGenerator
-def count_primes(ps):
-    return sum(ps)
+@jug.TaskGenerator
+def write_output( primes_bool ):
 
-@TaskGenerator
-def write_output(n):
-    with open('output.txt', 'wt') as output:
-        output.write("Found {0} primes <= 100.\n".format(n))
+    filepath = os.path.join(
+        pm['data_dir'],
+        'primes.hdf5',
+    )
+    f = h5py.File( filepath, 'w' )
+    f.create_dataset( 'primes', data=primes_bool )
 
 # TROVE PARAMS
-# (wrapping the parameters in a trove call)
 import trove.build
 import sys
 pm = trove.build.link_params_to_config(
@@ -36,10 +38,9 @@ filepath = os.path.join(
 f = h5py.File( filepath, 'r' )
 numbers = np.array( f['numbers'][...] )
 
+# Run
+primes_bool = []
+for n in numbers:
+    primes_bool.append( jug.Task( is_prime, n ) )
 
-primes100 = []
-for n in range(pm['low'], pm['high']):
-    primes100.append(is_prime(n))
-
-n_primes = count_primes(primes100)
-write_output(n_primes)
+write_output( primes_bool )

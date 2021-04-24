@@ -105,6 +105,39 @@ class TestExecutable( unittest.TestCase ):
 
 ########################################################################
 
+class TestExecutableJug( unittest.TestCase ):
+
+    def tearDown( self ):
+
+        data_dirs = [
+            './tests/data/examples/jug' ,
+        ]
+        for data_dir in data_dirs:
+            if os.path.exists( data_dir ):
+                shutil.rmtree( data_dir )
+
+    ########################################################################
+
+    def test_executable( self ):
+
+        execute.run( './tests/examples/jug/jug.trove' )
+
+        # Check
+        main_fp = './tests/data/examples/jug/less_low/jug.hdf5'
+        main = h5py.File( main_fp, 'r' )
+        assert main['primes'][...].size == 100
+
+        # Check more
+        for ident in [ 'low', 'less_low' ]:
+            for script in [ 'py.1', 'jug.2' ]:
+                ofp = './tests/data/examples/jug/{}/{}.troveflag'.format(
+                    ident,
+                    script,
+                )
+                assert os.path.exists( ofp )
+
+########################################################################
+
 class TestScript( unittest.TestCase ):
 
     def tearDown( self ):

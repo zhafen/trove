@@ -1,0 +1,47 @@
+########################################################################
+[DEFAULT]
+########################################################################
+# This section named "[DEFAULT]" contains the majority of
+# parameters used in the analysis.
+
+# Filetree parameters
+root_data_dir = ./tests/data/examples/jug
+code_dir = ./tests/examples/jug
+figure_dir = ./tests/figures
+# Some handling of relative paths is included
+# (and is necessary for pre-built examples such as this one)
+# but absolute paths are encouraged.
+
+# Script options
+low = 2
+high = 100
+
+########################################################################
+[SCRIPTS]
+########################################################################
+# This section named "[SCRIPTS]" contains code that will be run.
+# Code will be run in order from lowest to highest number
+# The prefix determines how the code will be handled.
+
+# Preprocessing
+py.1 = ${code_dir}/pre.py
+
+# Main executable
+jug.2 = ${code_dir}/primes.py
+
+# Post-processing
+# nb.3 = ${code_dir}/post.ipynb
+
+########################################################################
+# Parameter Variations
+########################################################################
+# These sections are variations on the parameters to explore.
+# Each will create a trove of data.
+# The section name should be the identifier you would
+# like to use for that set of parameters.
+
+[low]
+
+[less_low]
+low = 101
+high = 200
