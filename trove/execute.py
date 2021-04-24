@@ -26,7 +26,7 @@ def run( config_fp, n_procs=4, max_loops=1000 ):
             Maximum loops before forcibly exiting.
     '''
 
-    # As a precaution, convert to abso
+    # As a precaution, convert to absolute path
     config_fp = os.path.abspath( config_fp )
 
     # Load the config
