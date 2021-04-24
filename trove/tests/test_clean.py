@@ -74,3 +74,17 @@ class TestClean( unittest.TestCase ):
         for data_dir in self.data_dirs:
             jugdir_fp = os.path.join( data_dir, 'test.jugdir' )
             assert not os.path.exists( jugdir_fp )
+
+    ########################################################################
+
+    def test_full_clean( self ):
+
+        # Main function
+        clean.clean(
+            './tests/examples/standard/standard.trove',
+            full_clean = True
+        )
+
+        # Check
+        for data_dir in self.data_dirs:
+            assert not os.path.exists( data_dir )
