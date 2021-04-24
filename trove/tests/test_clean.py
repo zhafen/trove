@@ -54,3 +54,23 @@ class TestClean( unittest.TestCase ):
             for troveflag in self.troveflags:
                 flag_fp = os.path.join( data_dir, troveflag )
                 assert not os.path.exists( flag_fp )
+
+    ########################################################################
+
+    def test_clean_jugdir( self ):
+
+        # Create jugdir mockups
+        for data_dir in self.data_dirs[:-1]:
+            jugdir_fp = os.path.join( data_dir, 'test.jugdir' )
+            os.makedirs( jugdir_fp, exist_ok=True )
+
+        # Main function
+        clean.clean(
+            './tests/examples/standard/standard.trove',
+            clean_jug = True,
+        )
+
+        # Check
+        for data_dir in self.data_dirs:
+            jugdir_fp = os.path.join( data_dir, 'test.jugdir' )
+            assert not os.path.exists( jugdir_fp )

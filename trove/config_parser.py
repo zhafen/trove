@@ -114,6 +114,16 @@ class ConfigParser( configparser.ConfigParser ):
             **kwargs
         )
 
+    @property
+    def data_dirs( self ):
+
+        if not hasattr( self, '_data_dirs' ):
+            self._data_dirs = [
+                os.path.dirname( _ ) for _ in self.manager.data_files
+             ]
+
+        return self._data_dirs
+
     def get_next_data_dir( self, *args, **kwargs ):
         '''Get the next data dir, and create it if it doesn't exist.
         '''
