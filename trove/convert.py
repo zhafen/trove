@@ -1,4 +1,5 @@
 '''Tools for converting existing code to a trove-compatible format.'''
+import glob
 import os
 import pathlib
 import sys
@@ -33,7 +34,8 @@ def convert( config_fp ):
     # Loop and look for existing files
     for data_dir in tcp.data_dirs:
         for i, filename in enumerate( possible_files ):
-            if os.path.exists( os.path.join( data_dir, filename ) ):
+            filepath = os.path.join( data_dir, filename )
+            if len( glob.glob( filepath ) ) > 0:
                 troveflag_fp = os.path.join( data_dir, ids[i] + '.troveflag' )
                 pathlib.Path( troveflag_fp ).touch()
 

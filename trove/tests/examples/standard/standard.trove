@@ -44,11 +44,9 @@ nb.3 = ${code_dir}/post.ipynb
 # In particular it will check if the data products exist and mark that part
 # of the trove as complete if they do.
 
-# Preprocessing
 py.1 = pre.hdf5
-
-# Main executable
 py.2 = main.hdf5
+nb.3 = post*.hdf5
 
 ########################################################################
 # Parameter Variations
