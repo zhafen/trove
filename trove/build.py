@@ -42,7 +42,7 @@ def link_params_to_config(
             # We'll try to evaluate the argument, but fallback to the str rep
             try:
                 pm[key] = ast.literal_eval( value_str )
-            except SyntaxError:
+            except ( SyntaxError, ValueError ) as e:
                 pm[key] = value_str
 
     return pm
