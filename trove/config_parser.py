@@ -75,7 +75,7 @@ class ConfigParser( configparser.ConfigParser ):
         super().read( *args, **kwargs )
 
         # Parse for variations on the parameters
-        self.special_sections = [ 'DEFAULT', 'SCRIPTS' ]
+        self.special_sections = [ 'DEFAULT', 'SCRIPTS', 'CONVERSION' ]
         self.variations = []
         for key in copy.deepcopy( self.keys() ):
             if key in self.special_sections:
@@ -92,7 +92,8 @@ class ConfigParser( configparser.ConfigParser ):
                 'Config at {} does not contain '.format( self.fp ) + \
                 'any sections.\nPlease check the file/file location.'
             )
-        for key in self.special_sections:
+        self.required_sections = [ 'DEFAULT', 'SCRIPTS' ]
+        for key in self.required_sections:
             if key not in self.sections():
 
                 # Special rules for the default section

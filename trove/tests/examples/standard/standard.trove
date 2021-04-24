@@ -38,6 +38,19 @@ py.2 = ${code_dir}/main.py
 nb.3 = ${code_dir}/post.ipynb
 
 ########################################################################
+[CONVERSION]
+########################################################################
+# This section helps convert existing pipelines to trove pipelines.
+# In particular it will check if the data products exist and mark that part
+# of the trove as complete if they do.
+
+# Preprocessing
+py.1 = pre.hdf5
+
+# Main executable
+py.2 = main.hdf5
+
+########################################################################
 # Parameter Variations
 ########################################################################
 # These sections are variations on the parameters to explore.
