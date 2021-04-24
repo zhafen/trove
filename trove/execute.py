@@ -11,7 +11,7 @@ import sys
 import time
 import warnings
 
-import trove.build as build
+import trove.config_parser as config_parser
 
 ########################################################################
 
@@ -30,7 +30,7 @@ def run( config_fp, n_procs=4, max_loops=1000 ):
     config_fp = os.path.abspath( config_fp )
 
     # Load the config
-    tcp = build.ConfigParser( config_fp )
+    tcp = config_parser.ConfigParser( config_fp )
 
     # Start run loop
     loop_count = 0
