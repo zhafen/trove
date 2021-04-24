@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''Tools for running the pipeline.'''
 
+import jug
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 import os
@@ -77,11 +78,25 @@ def run( config_fp, max_loops=1000 ):
         )
 
         # Run
-        run_output = RUN_FN_MAPPING[script_id.split( '.' )[0]](
-            current_script,
-            config_fp,
-            tcp.get_next_data_dir(),
-        )
+        prefix = script_id.split( '.' )[0]
+        if prefix == 'py':
+            run_output = run_python(
+                current_script,
+                config_fp,
+            )
+        elif prefix == 'nb':
+            run_output = run_python_notebook(
+                current_script,
+                config_fp,
+                tcp.get_next_data_dir(),
+            )
+        elif prefix == 'jug':
+            run_output = run_jug(
+                current_script,
+                config_fp,
+                tcp.get_next_data_dir(),
+                script_id
+            )
 
         # When done running mark as done
         print(
@@ -99,7 +114,7 @@ def run( config_fp, max_loops=1000 ):
 
 ########################################################################
 
-def run_python( script_fp, config_fp, output_dir ):
+def run_python( script_fp, config_fp ):
     '''Code for running a python program.
 
     Args:
@@ -108,11 +123,6 @@ def run_python( script_fp, config_fp, output_dir ):
 
         config_fp (str):
             Config filepath, passed as a commandline arg to the script.
-
-        output_dir (str):
-            Where to store any products from running the script.
-            Not currently used, but included for compatibility with other
-            run functions.
 
     Returns:
         subprocess.SubProcess:
@@ -163,11 +173,52 @@ def run_python_notebook( script_fp, config_fp, output_dir ):
 
     return nb
 
-RUN_FN_MAPPING = {
-    'py': run_python,
-    'nb': run_python_notebook,
-}
+def run_jug( script_fp, config_fp, output_dir, script_id, ):
+    '''Code for running a python program.
 
+    Args:
+        script_fp (str):
+            Python script to run.
+
+        config_fp (str):
+            Config filepath, passed as a commandline arg to the script.
+
+        output_dir (str):
+            Where to store any products from running the script.
+            Not currently used, but included for compatibility with other
+            run functions.
+
+    Returns:
+        subprocess.SubProcess:
+            Subprocess output.
+    '''
+
+    jug_dir = os.path.join(
+        output_dir,
+        os.path.basename( script_id ) + '.jugdir',
+    )
+
+    sp = subprocess.run(
+        [
+            'jug',
+            'execute',
+            script_fp,
+            config_fp,
+            '--jugdir=' + jug_dir,
+            '&',
+        ]
+    )
+    sp = subprocess.run(
+        [
+            'jug',
+            'execute',
+            script_fp,
+            config_fp,
+            '--jugdir=' + jug_dir,
+        ]
+    )
+
+    return sp
 
 ########################################################################
 

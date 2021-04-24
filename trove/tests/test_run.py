@@ -123,7 +123,7 @@ class TestExecutableJug( unittest.TestCase ):
         execute.run( './tests/examples/jug/jug.trove' )
 
         # Check
-        main_fp = './tests/data/examples/jug/less_low/jug.hdf5'
+        main_fp = './tests/data/examples/jug/less_low/primes.hdf5'
         main = h5py.File( main_fp, 'r' )
         assert main['primes'][...].size == 100
 
