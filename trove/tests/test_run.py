@@ -120,7 +120,13 @@ class TestExecutableJug( unittest.TestCase ):
 
     def test_executable( self ):
 
+        start_time = time.time()
+
         execute.run( './tests/examples/jug/jug.trove' )
+
+        time_taken = time.time() - start_time
+
+        assert time_taken < 5, "Parallelization is not functioning."
 
         # Check
         main_fp = './tests/data/examples/jug/less_low/primes.hdf5'

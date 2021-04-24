@@ -7,7 +7,7 @@ from time import sleep
 def is_prime(n):
 
     # Sleep for 1 second, this runs too fast and is not a good demo
-    sleep(0.25)
+    sleep(0.05)
     for j in range(2, n - 1):
         if (n % j) == 0:
             return False

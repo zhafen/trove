@@ -15,7 +15,7 @@ import trove.build as build
 
 ########################################################################
 
-def run( config_fp, max_loops=1000 ):
+def run( config_fp, n_procs=4, max_loops=1000 ):
     '''Run the trove pipeline specified in the given config.
 
     Args:
@@ -95,7 +95,8 @@ def run( config_fp, max_loops=1000 ):
                 current_script,
                 config_fp,
                 tcp.get_next_data_dir(),
-                script_id
+                script_id,
+                n_procs,
             )
 
         # When done running mark as done
@@ -173,7 +174,7 @@ def run_python_notebook( script_fp, config_fp, output_dir ):
 
     return nb
 
-def run_jug( script_fp, config_fp, output_dir, script_id, ):
+def run_jug( script_fp, config_fp, output_dir, script_id, n_procs ):
     '''Code for running a python program.
 
     Args:
@@ -193,30 +194,24 @@ def run_jug( script_fp, config_fp, output_dir, script_id, ):
             Subprocess output.
     '''
 
+    # Setup args
     jug_dir = os.path.join(
         output_dir,
         os.path.basename( script_id ) + '.jugdir',
     )
+    sp_args = [
+        'jug',
+        'execute',
+        script_fp,
+        config_fp,
+        '--jugdir=' + jug_dir,
+    ]
 
-    sp = subprocess.run(
-        [
-            'jug',
-            'execute',
-            script_fp,
-            config_fp,
-            '--jugdir=' + jug_dir,
-            '&',
-        ]
-    )
-    sp = subprocess.run(
-        [
-            'jug',
-            'execute',
-            script_fp,
-            config_fp,
-            '--jugdir=' + jug_dir,
-        ]
-    )
+    # Run parallel
+    for i in range( n_procs-1 ):
+        sp = subprocess.Popen( sp_args )
+    # Finish with one we wait for
+    sp = subprocess.run( sp_args )
 
     return sp
 
