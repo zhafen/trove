@@ -8,7 +8,7 @@ import trove.config_parser as config_parser
 
 ########################################################################
 
-def clean( config_fp, clean_jug=True, full_clean=False ):
+def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
     '''Function for cleaning up pipeline data.
 
     Args:
@@ -29,10 +29,14 @@ def clean( config_fp, clean_jug=True, full_clean=False ):
     # Load the config
     tcp = config_parser.ConfigParser( config_fp )
 
+    if verbose: print( 'Cleaning...' )
+
     # Full clean
     if full_clean:
+        if verbose: print( 'Performing full clean...' )
         for data_dir in tcp.data_dirs:
             if os.path.exists( data_dir ):
+                if verbose: print( '    Removing {}'.format( data_dir ) )
                 shutil.rmtree( data_dir )
 
         return
@@ -40,12 +44,14 @@ def clean( config_fp, clean_jug=True, full_clean=False ):
     # Clean
     for data_filepath in tcp.manager.data_files:
         if os.path.exists( data_filepath ):
+            if verbose: print( '    Removing {}'.format( data_filepath ) )
             os.remove( data_filepath )
 
     # Clean jugdirs
     for data_dir in tcp.data_dirs:
         jugdir_glob = os.path.join( data_dir, '*.jugdir' )
         for jugdir in glob.glob( jugdir_glob ):
+            if verbose: print( '    Removing {}'.format( jugdir ) )
             shutil.rmtree( jugdir )
 
 ########################################################################
