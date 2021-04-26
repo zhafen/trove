@@ -7,6 +7,7 @@ import trove.config_parser as config_parser
 
 def link_params_to_config(
         config_fp,
+        split_existing_and_new = False,
         **pm
     ):
     '''Link the values of a set of existing params to those in a config,
@@ -16,8 +17,17 @@ def link_params_to_config(
         config_fp (str):
             Location of the config file to use for updating the parameters.
 
+        split_existing_and_new (bool):
+            If True return two dictionaries, one for parameters that already    
+            existed and may have been updated, and one for new parameters
+            that were added.
+
     Kwargs:
         All parameters to update.
+
+    Returns:
+        pm (dict), [pm_new (dict)]
+            Dictionaries containing new/updated parameters.
     '''
 
     # Read the config
@@ -31,19 +41,35 @@ def link_params_to_config(
         options = tcp.defaults()
     else:
         options = tcp.options( variation )
-    pm['data_dir'] = tcp.get_next_data_dir()
-    pm['variation'] = variation
 
     # Update loop
+    pm_new = {}
     for key in options:
 
-        # Loop through config sections
+        # Get value from config
         value_str = tcp.get( variation, key, fallback=None )
         if value_str is not None:
             # We'll try to evaluate the argument, but fallback to the str rep
             try:
-                pm[key] = ast.literal_eval( value_str )
+                value = ast.literal_eval( value_str )
             except ( SyntaxError, ValueError ) as e:
-                pm[key] = value_str
+                value = value_str
 
+        # Assign
+        if not split_existing_and_new:
+            pm[key] = value
+
+        else:
+            if key in pm:
+                pm[key] = value
+            else:
+                pm_new[key] = value
+
+    # Return
+    if split_existing_and_new:
+        pm_new['data_dir'] = tcp.get_next_data_dir()
+        pm_new['variation'] = variation
+        return pm, pm_new
+    pm['data_dir'] = tcp.get_next_data_dir()
+    pm['variation'] = variation
     return pm

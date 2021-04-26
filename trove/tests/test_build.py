@@ -37,7 +37,7 @@ class TestLinkParams( unittest.TestCase ):
         # Update parameters
         pm, new_pm = trove_build.link_params_to_config(
             config_fp = './tests/examples/basic.trove',
-            split_updated_from_new = True,
+            split_existing_and_new = True,
             a = 2,
             dog = False,
             cat = 'not best',
