@@ -48,11 +48,12 @@ def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
             os.remove( data_filepath )
 
     # Clean jugdirs
-    for data_dir in tcp.data_dirs:
-        jugdir_glob = os.path.join( data_dir, '*.jugdir' )
-        for jugdir in glob.glob( jugdir_glob ):
-            if verbose: print( '    Removing {}'.format( jugdir ) )
-            shutil.rmtree( jugdir )
+    if clean_jug:
+        for data_dir in tcp.data_dirs:
+            jugdir_glob = os.path.join( data_dir, '*.jugdata' )
+            for jugdir in glob.glob( jugdir_glob ):
+                if verbose: print( '    Removing {}'.format( jugdir ) )
+                shutil.rmtree( jugdir )
 
 ########################################################################
 
