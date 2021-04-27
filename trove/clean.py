@@ -1,4 +1,5 @@
 '''Tools for cleaning the pipeline.'''
+import argparse
 import glob
 import os
 import shutil
@@ -59,6 +60,37 @@ def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
 
 if __name__ == '__main__':
 
+    # Parse args
+    parser = argparse.ArgumentParser(
+        description='Clean and reset your pipeline.'
+    )
+    parser.add_argument(
+        'config_fp',
+        type = str,
+        help = 'Location of your config file used to guide cleaning.',
+    )
+    parser.add_argument(
+        '--clean_jug',
+        help = 'Remove .jugdata dirs.',
+        action = 'store_false',
+    )
+    parser.add_argument(
+        '--full_clean',
+        help = 'Use with caution: fully deletes all data directories!',
+        action = 'store_true',
+    )
+    parser.add_argument(
+        '--quiet',
+        help = 'Quiet down the output.',
+        action = 'store_false',
+    )
+    args = parser.parse_args()
+
     # Run
-    clean( *sys.argv[1:] )
+    clean(
+        args.config_fp,
+        args.clean_jug,
+        args.full_clean,
+        args.verbose,
+    )
 

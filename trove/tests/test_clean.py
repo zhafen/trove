@@ -61,7 +61,7 @@ class TestClean( unittest.TestCase ):
 
         # Create jugdir mockups
         for data_dir in self.data_dirs[:-1]:
-            jugdir_fp = os.path.join( data_dir, 'test.jugdir' )
+            jugdir_fp = os.path.join( data_dir, 'test.jugdata' )
             os.makedirs( jugdir_fp, exist_ok=True )
 
         # Main function
@@ -84,6 +84,21 @@ class TestClean( unittest.TestCase ):
             './tests/examples/standard/standard.trove',
             full_clean = True
         )
+
+        # Check
+        for data_dir in self.data_dirs:
+            assert not os.path.exists( data_dir )
+
+    ########################################################################
+
+    def test_full_clean_commandline( self ):
+
+        subprocess.run([
+            sys.executable,
+            './clean.py',
+            './tests/examples/standard/standard.trove',
+            '--full_clean'
+        ])
 
         # Check
         for data_dir in self.data_dirs:
