@@ -1,4 +1,4 @@
-'''Tools for converting existing code to a trove-compatible format.'''
+'''Tools for evaluating pipeline progress.'''
 import glob
 import os
 import pathlib
@@ -8,7 +8,7 @@ import trove.config_parser as config_parser
 
 ########################################################################
 
-def convert( config_fp, verbose=True ):
+def evaluate( config_fp, verbose=True ):
     '''Look for data files that mark a part of the trove process as complete
     and mark them as done.
 
@@ -53,5 +53,5 @@ def convert( config_fp, verbose=True ):
 if __name__ == '__main__':
 
     # Run
-    convert( *sys.argv[1:] )
+    evaluate( *sys.argv[1:] )
 

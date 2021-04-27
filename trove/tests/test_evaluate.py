@@ -1,4 +1,4 @@
-'''Testing for cleaning up the pipeline.
+'''Testing for evaluating pipeline progress.
 '''
 
 import h5py
@@ -12,11 +12,11 @@ import sys
 import time
 import unittest
 
-import trove.convert as convert
+import trove.evaluate as evaluate
 
 ########################################################################
 
-class TestConvert( unittest.TestCase ):
+class TestEvaluate( unittest.TestCase ):
 
     def setUp( self ):
 
@@ -45,10 +45,10 @@ class TestConvert( unittest.TestCase ):
 
     ########################################################################
 
-    def test_convert( self ):
+    def test_evaluate( self ):
 
         # Main function
-        convert.convert( './tests/examples/standard/standard.trove' )
+        evaluate.evaluate( './tests/examples/standard/standard.trove' )
 
         # Check
         for data_dir in self.data_dirs[:-1]:
@@ -58,7 +58,7 @@ class TestConvert( unittest.TestCase ):
 
     ########################################################################
 
-    def test_convert_glob( self ):
+    def test_evaluate_glob( self ):
 
         # Create the test for the glob
         pathlib.Path(
@@ -66,7 +66,7 @@ class TestConvert( unittest.TestCase ):
         ).touch()
 
         # Main function
-        convert.convert( './tests/examples/standard/standard.trove' )
+        evaluate.evaluate( './tests/examples/standard/standard.trove' )
 
         # Check
         for data_dir in self.data_dirs[:-1]:
