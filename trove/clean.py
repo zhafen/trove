@@ -17,7 +17,7 @@ def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
             Config to base the cleaning on.
 
         clean_jug (bool):
-            If True remove any *.jugdir that were created.
+            If True remove any *.jugdata that were created.
 
         full_clean (bool):
             If True remove the entire data_dirs that were created.
@@ -48,13 +48,13 @@ def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
             if verbose: print( '    Removing {}'.format( data_filepath ) )
             os.remove( data_filepath )
 
-    # Clean jugdirs
+    # Clean jugdatas
     if clean_jug:
         for data_dir in tcp.data_dirs:
-            jugdir_glob = os.path.join( data_dir, '*.jugdata' )
-            for jugdir in glob.glob( jugdir_glob ):
-                if verbose: print( '    Removing {}'.format( jugdir ) )
-                shutil.rmtree( jugdir )
+            jugdata_glob = os.path.join( data_dir, '*.jugdata' )
+            for jugdata in glob.glob( jugdata_glob ):
+                if verbose: print( '    Removing {}'.format( jugdata ) )
+                shutil.rmtree( jugdata )
 
 ########################################################################
 
@@ -70,9 +70,9 @@ if __name__ == '__main__':
         help = 'Location of your config file used to guide cleaning.',
     )
     parser.add_argument(
-        '--clean_jug',
-        help = 'Remove .jugdata dirs.',
-        action = 'store_false',
+        '--dont_clean_jug',
+        help = 'Do not remove .jugdata dirs.',
+        action = 'store_true',
     )
     parser.add_argument(
         '--full_clean',
@@ -82,15 +82,15 @@ if __name__ == '__main__':
     parser.add_argument(
         '--quiet',
         help = 'Quiet down the output.',
-        action = 'store_false',
+        action = 'store_true',
     )
     args = parser.parse_args()
 
     # Run
     clean(
         args.config_fp,
-        args.clean_jug,
+        not args.dont_clean_jug,
         args.full_clean,
-        args.verbose,
+        not args.quiet,
     )
 
