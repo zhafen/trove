@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''Tools for running the pipeline.'''
-
+import argparse
 import jug
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
@@ -219,6 +219,35 @@ def run_jug( script_fp, config_fp, output_dir, script_id, n_procs ):
 
 if __name__ == '__main__':
 
+    # Parse args
+    parser = argparse.ArgumentParser(
+        description='Clean and reset your pipeline.'
+    )
+    parser.add_argument(
+        'config_fp',
+        type = str,
+        help = 'Location of your config file used to guide cleaning.',
+    )
+    parser.add_argument(
+        '-n',
+        '--n_processors',
+        type = int,
+        help = 'Number of processors to use when performing multiprocessing.',
+        default = 4,
+    )
+    args = parser.parse_args()
+    parser.add_argument(
+        '-max_loops',
+        type = int,
+        help = 'Maximum number of times to run scripts.',
+        default = 1000,
+    )
+    args = parser.parse_args()
+
     # Run
-    run( *sys.argv[1:] )
+    run(
+        args.config_fp,
+        args.n_processors,
+        args.max_loops,
+    )
 
