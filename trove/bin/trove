@@ -7,14 +7,19 @@ import trove.execute as execute
 import trove.clean as clean
 import trove.evaluate as evaluate
 
+assert len( sys.argv ) > 1, 'Must choose execute, clean, or evaluate.'
+
 # Execution case
 if sys.argv[1] == 'execute':
     subprocess.run( [ sys.executable, execute.__file__ ] + sys.argv[2:] )
 
 # Cleaning case
-if sys.argv[1] == 'clean':
+elif sys.argv[1] == 'clean':
     subprocess.run( [ sys.executable, clean.__file__ ] + sys.argv[2:] )
 
 # Cleaning case
-if sys.argv[1] == 'evaluate':
+elif sys.argv[1] == 'evaluate':
     subprocess.run( [ sys.executable, evaluate.__file__ ] + sys.argv[2:] )
+
+else:
+    print( 'Unrecognized argument for trove.' )

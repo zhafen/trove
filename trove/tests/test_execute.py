@@ -85,6 +85,7 @@ class TestExecutable( unittest.TestCase ):
         subprocess.run([
             sys.executable,
             './bin/trove',
+            'execute',
             './tests/examples/standard/standard.trove',
         ])
 

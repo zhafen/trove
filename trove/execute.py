@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
     # Parse args
     parser = argparse.ArgumentParser(
-        description='Clean and reset your pipeline.'
+        description='Run your trove pipeline.'
     )
     parser.add_argument(
         'config_fp',
