@@ -123,3 +123,19 @@ class TestClean( unittest.TestCase ):
         # Check
         for data_dir in self.data_dirs:
             assert not os.path.exists( data_dir )
+
+    ########################################################################
+
+    def test_full_clean_commandline_bin( self ):
+
+        subprocess.run([
+            sys.executable,
+            './bin/trove',
+            'clean',
+            './tests/examples/standard/standard.trove',
+            '--full_clean'
+        ])
+
+        # Check
+        for data_dir in self.data_dirs:
+            assert not os.path.exists( data_dir )

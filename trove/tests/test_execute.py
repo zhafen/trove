@@ -77,6 +77,18 @@ class TestExecutable( unittest.TestCase ):
         ])
 
         self.check()
+
+    ########################################################################
+
+    def test_executable_bin( self ):
+
+        subprocess.run([
+            sys.executable,
+            './bin/trove',
+            './tests/examples/standard/standard.trove',
+        ])
+
+        self.check()
  
     ########################################################################
 

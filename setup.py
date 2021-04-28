@@ -18,6 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    scripts=[ 'trove/bin/trove' ],
     # install_requires=[
     #     'bibtexparser>=1.2.0',
     #     'tqdm>=4.46.0',
