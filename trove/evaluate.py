@@ -1,4 +1,5 @@
 '''Tools for evaluating pipeline progress.'''
+import argparse
 import glob
 import os
 import pathlib
@@ -52,6 +53,24 @@ def evaluate( config_fp, verbose=True ):
 
 if __name__ == '__main__':
 
+    # Parse args
+    parser = argparse.ArgumentParser(
+        description='Evaluate pipeline progress.'
+    )
+    parser.add_argument(
+        'config_fp',
+        type = str,
+        help = 'Location of your config file used to guide evaluation.',
+    )
+    parser.add_argument(
+        '--quiet',
+        help = 'Quiet down the output.',
+        action = 'store_true',
+    )
+
     # Run
-    evaluate( *sys.argv[1:] )
+    evaluate(
+        args.config_fp,
+        not args.quiet,
+    )
 
