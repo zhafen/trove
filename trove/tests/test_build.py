@@ -98,3 +98,22 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['high'] == 1000
         assert pm['power'] == 1
 
+    ########################################################################
+
+    def test_link_params_variation( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/standard/standard.trove',
+            variation = 'this_is_also_an_identifier',
+            n = 100,
+            high = 10,
+            power = 0,
+        )
+
+        # Check
+        assert pm['n'] == 1000
+        assert pm['high'] == 1000
+        assert pm['power'] == 3
+
+        assert pm['data_dir'] == './tests/data/examples/standard/this_is_also_an_identifier'
