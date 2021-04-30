@@ -1,12 +1,14 @@
 '''Tools for building the pipeline.'''
 
 import ast
+import os
 import trove.config_parser as config_parser
 
 ########################################################################
 
 def link_params_to_config(
         config_fp,
+        variation = None,
         split_existing_and_new = False,
         **pm
     ):
@@ -16,6 +18,10 @@ def link_params_to_config(
     Args:
         config_fp (str):
             Location of the config file to use for updating the parameters.
+
+        variation (str):
+            Specific variation to select from the config.
+            If None, defaults to the next in the trove.
 
         split_existing_and_new (bool):
             If True return two dictionaries, one for parameters that already    
@@ -34,8 +40,15 @@ def link_params_to_config(
     tcp = config_parser.ConfigParser( config_fp )
 
     # Identify which variation is next
-    variation_args = tcp.get_next_variation()
-    variation = variation_args[0]
+    if variation is None:
+        variation_args = tcp.get_next_variation()
+        variation = variation_args[0]
+        data_dir = tcp.get_next_data_dir()
+    else:
+        data_dir = os.path.dirname( tcp.manager.get_file( variation, 'FOO' ) )
+
+    # Get the data dir
+
     # Account for different formatting
     if variation == 'DEFAULT':
         options = tcp.defaults()
@@ -67,9 +80,9 @@ def link_params_to_config(
 
     # Return
     if split_existing_and_new:
-        pm_new['data_dir'] = tcp.get_next_data_dir()
+        pm_new['data_dir'] = data_dir
         pm_new['variation'] = variation
         return pm, pm_new
-    pm['data_dir'] = tcp.get_next_data_dir()
+    pm['data_dir'] = data_dir
     pm['variation'] = variation
     return pm
