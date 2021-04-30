@@ -115,10 +115,6 @@ class ConfigParser( configparser.ConfigParser ):
             **kwargs
         )
 
-    def get_data_dir_for_variation( self, variation ):
-
-        return os.path.dirname( self.manager.get_file( variation ) )
-
     @property
     def data_dirs( self ):
 

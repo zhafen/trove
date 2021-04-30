@@ -67,6 +67,7 @@ if __name__ == '__main__':
         help = 'Quiet down the output.',
         action = 'store_true',
     )
+    args = parser.parse_args()
 
     # Run
     evaluate(
