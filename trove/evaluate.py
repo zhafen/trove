@@ -29,6 +29,7 @@ def evaluate( config_fp, verbose=True ):
         print( 'Determining progress. Found data products for the following:' )
 
     # Loop and look for existing files
+    n_found = 0
     for filepath in tcp.manager.data_files:
         # Split into parameters
         data_dir, troveflag = os.path.split( filepath )
@@ -48,6 +49,11 @@ def evaluate( config_fp, verbose=True ):
             if verbose: print( '    {} | {}'.format( script_id, data_dir ) )
             troveflag_fp = os.path.join( data_dir, script_id + '.troveflag' )
             pathlib.Path( troveflag_fp ).touch()
+            n_found += 1
+
+    print( '{:.3g}% of data products found'.format(
+        100. * n_found / len( tcp.manager.data_files )
+    ) )
 
 ########################################################################
 
