@@ -75,7 +75,7 @@ class ConfigParser( configparser.ConfigParser ):
         super().read( *args, **kwargs )
 
         # Parse for variations on the parameters
-        self.special_sections = [ 'DEFAULT', 'SCRIPTS', 'CONVERSION' ]
+        self.special_sections = [ 'DEFAULT', 'SCRIPTS', 'DATA PRODUCTS' ]
         self.variations = []
         for key in copy.deepcopy( self.keys() ):
             if key in self.special_sections:

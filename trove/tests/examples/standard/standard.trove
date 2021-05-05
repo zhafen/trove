@@ -38,7 +38,7 @@ py.2 = ${code_dir}/main.py
 nb.3 = ${code_dir}/post.ipynb
 
 ########################################################################
-[CONVERSION]
+[DATA PRODUCTS]
 ########################################################################
 # This section helps convert existing pipelines to trove pipelines.
 # In particular it will check if the data products exist and mark that part

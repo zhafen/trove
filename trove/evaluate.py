@@ -16,7 +16,7 @@ def evaluate( config_fp, verbose=True ):
     Args:
         config_fp (str):
             Config to use for the conversion process. Must contain a section
-            titled "CONVERSION".
+            titled "DATA PRODUCTS".
     '''
 
     # As a precaution, convert to absolute path
@@ -35,11 +35,11 @@ def evaluate( config_fp, verbose=True ):
         script_id = '.'.join( troveflag.split( '.' )[:-1] )
 
         # Skip files we're not given an option for
-        if not tcp.has_option( 'CONVERSION', script_id ):
+        if not tcp.has_option( 'DATA PRODUCTS', script_id ):
             continue
 
         # Find what to search for
-        filename = tcp.get( 'CONVERSION', script_id )
+        filename = tcp.get( 'DATA PRODUCTS', script_id )
         filepath = os.path.join( data_dir, filename )
 
         # Check if it exists
