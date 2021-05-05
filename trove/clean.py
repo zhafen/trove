@@ -51,10 +51,11 @@ def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
     # Clean jugdatas
     if clean_jug:
         for data_dir in tcp.data_dirs:
-            jugdata_glob = os.path.join( data_dir, '*.jugdata' )
-            for jugdata in glob.glob( jugdata_glob ):
-                if verbose: print( '    Removing {}'.format( jugdata ) )
-                shutil.rmtree( jugdata )
+            for extension in [ '*.jugdata', '*.jugdir' ]:
+                jugdata_glob = os.path.join( data_dir, extension )
+                for jugdata in glob.glob( jugdata_glob ):
+                    if verbose: print( '    Removing {}'.format( jugdata ) )
+                    shutil.rmtree( jugdata )
 
 ########################################################################
 
