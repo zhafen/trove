@@ -44,7 +44,6 @@ def evaluate( config_fp, verbose=True ):
         filepath = os.path.join( data_dir, filename )
 
         # Check if it exists
-        filepath = os.path.join( data_dir, filename )
         if len( glob.glob( filepath ) ) > 0:
             if verbose: print( '    {} | {}'.format( script_id, data_dir ) )
             troveflag_fp = os.path.join( data_dir, script_id + '.troveflag' )

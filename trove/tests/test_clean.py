@@ -97,6 +97,48 @@ class TestClean( unittest.TestCase ):
 
     ########################################################################
 
+    def test_clean_data_products( self ):
+
+        # Create mockups
+        for data_dir in self.data_dirs[:-1]:
+            fp = os.path.join( data_dir, 'pre.hdf5' )
+            pathlib.Path( fp ).touch()
+
+        # Main function
+        clean.clean(
+            './tests/examples/standard/standard.trove',
+            clean_data_products = True,
+        )
+
+        # Check
+        for data_dir in self.data_dirs:
+            fp = os.path.join( data_dir, 'pre.hdf5' )
+            assert not os.path.exists( fp )
+
+    ########################################################################
+
+    def test_clean_data_products_command_line( self ):
+
+        # Create mockups
+        for data_dir in self.data_dirs[:-1]:
+            fp = os.path.join( data_dir, 'pre.hdf5' )
+            pathlib.Path( fp ).touch()
+
+        # Main function
+        subprocess.run([
+            sys.executable,
+            './clean.py',
+            './tests/examples/standard/standard.trove',
+            '--clean_data'
+        ])
+
+        # Check
+        for data_dir in self.data_dirs:
+            fp = os.path.join( data_dir, 'pre.hdf5' )
+            assert not os.path.exists( fp )
+
+    ########################################################################
+
     def test_full_clean( self ):
 
         # Main function

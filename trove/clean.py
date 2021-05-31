@@ -9,7 +9,7 @@ import trove.config_parser as config_parser
 
 ########################################################################
 
-def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
+def clean( config_fp, clean_jug=True, clean_data_products=False, full_clean=False, verbose=True ):
     '''Function for cleaning up pipeline data.
 
     Args:
@@ -48,6 +48,25 @@ def clean( config_fp, clean_jug=True, full_clean=False, verbose=True ):
             if verbose: print( '    Removing {}'.format( data_filepath ) )
             os.remove( data_filepath )
 
+        # Clean data products
+        # Split into parameters
+        data_dir, troveflag = os.path.split( data_filepath )
+        script_id = '.'.join( troveflag.split( '.' )[:-1] )
+
+        # Skip files we're not given an option for
+        if not tcp.has_option( 'DATA PRODUCTS', script_id ):
+            continue
+
+        # Find what to search for
+        filename = tcp.get( 'DATA PRODUCTS', script_id )
+        filepath = os.path.join( data_dir, filename )
+
+        # Check if existing and remove if so
+        filepaths = glob.glob( filepath )
+        if len( filepaths ) > 0:
+            for fp in filepaths:
+                os.remove( fp )
+
     # Clean jugdatas
     if clean_jug:
         for data_dir in tcp.data_dirs:
@@ -76,6 +95,11 @@ if __name__ == '__main__':
         action = 'store_true',
     )
     parser.add_argument(
+        '--clean_data',
+        help = 'Use with caution: deletes data products listed in config!',
+        action = 'store_true',
+    )
+    parser.add_argument(
         '--full_clean',
         help = 'Use with caution: fully deletes all data directories!',
         action = 'store_true',
@@ -91,6 +115,7 @@ if __name__ == '__main__':
     clean(
         args.config_fp,
         not args.dont_clean_jug,
+        args.clean_data,
         args.full_clean,
         not args.quiet,
     )
