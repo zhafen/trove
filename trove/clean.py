@@ -49,23 +49,24 @@ def clean( config_fp, clean_jug=True, clean_data_products=False, full_clean=Fals
             os.remove( data_filepath )
 
         # Clean data products
-        # Split into parameters
-        data_dir, troveflag = os.path.split( data_filepath )
-        script_id = '.'.join( troveflag.split( '.' )[:-1] )
+        if clean_data_products:
+            # Split into parameters
+            data_dir, troveflag = os.path.split( data_filepath )
+            script_id = '.'.join( troveflag.split( '.' )[:-1] )
 
-        # Skip files we're not given an option for
-        if not tcp.has_option( 'DATA PRODUCTS', script_id ):
-            continue
+            # Skip files we're not given an option for
+            if not tcp.has_option( 'DATA PRODUCTS', script_id ):
+                continue
 
-        # Find what to search for
-        filename = tcp.get( 'DATA PRODUCTS', script_id )
-        filepath = os.path.join( data_dir, filename )
+            # Find what to search for
+            filename = tcp.get( 'DATA PRODUCTS', script_id )
+            filepath = os.path.join( data_dir, filename )
 
-        # Check if existing and remove if so
-        filepaths = glob.glob( filepath )
-        if len( filepaths ) > 0:
-            for fp in filepaths:
-                os.remove( fp )
+            # Check if existing and remove if so
+            filepaths = glob.glob( filepath )
+            if len( filepaths ) > 0:
+                for fp in filepaths:
+                    os.remove( fp )
 
     # Clean jugdatas
     if clean_jug:

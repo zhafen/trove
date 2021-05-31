@@ -25,6 +25,7 @@ class TestClean( unittest.TestCase ):
             './tests/data/examples/standard/this_is_also_an_identifier' ,
         ]
         self.troveflags = [ 'py.1.troveflag', 'py.2.troveflag' ]
+        self.data_products = [ 'pre.hdf5', 'main.hdf5', ]
         
         # Create directories
         for data_dir in self.data_dirs:
@@ -32,6 +33,9 @@ class TestClean( unittest.TestCase ):
             for troveflag in self.troveflags:
                 flag_fp = os.path.join( data_dir, troveflag )
                 pathlib.Path( flag_fp ).touch()
+            for data_product in self.data_products:
+                data_fp = os.path.join( data_dir, data_product )
+                pathlib.Path( data_fp ).touch()
 
     ########################################################################
 
@@ -54,6 +58,10 @@ class TestClean( unittest.TestCase ):
             for troveflag in self.troveflags:
                 flag_fp = os.path.join( data_dir, troveflag )
                 assert not os.path.exists( flag_fp )
+
+            for data_product in self.data_products:
+                data_fp = os.path.join( data_dir, data_product )
+                assert os.path.exists( data_fp )
 
     ########################################################################
 
