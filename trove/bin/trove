@@ -6,6 +6,7 @@ import subprocess
 import trove.execute as execute
 import trove.clean as clean
 import trove.evaluate as evaluate
+import trove.archive as archive
 
 assert len( sys.argv ) > 1, 'Must choose execute, clean, or evaluate.'
 
@@ -17,9 +18,13 @@ if sys.argv[1] == 'execute':
 elif sys.argv[1] == 'clean':
     subprocess.run( [ sys.executable, clean.__file__ ] + sys.argv[2:] )
 
-# Cleaning case
+# Evaluation case
 elif sys.argv[1] == 'evaluate':
     subprocess.run( [ sys.executable, evaluate.__file__ ] + sys.argv[2:] )
+
+# Archiving case
+elif sys.argv[1] == 'archive':
+    subprocess.run( [ sys.executable, archive.__file__ ] + sys.argv[2:] )
 
 else:
     print( 'Unrecognized argument for trove.' )
