@@ -6,6 +6,7 @@ cat = 'the best'
 lizard = 'not bad'
 bird = 101011
 errors = None
+root_data_dir = .
 
 [SCRIPTS]
 s01 = 'does_not_exist.py'

@@ -8,6 +8,7 @@
 root_data_dir = ./tests/data/examples/standard
 code_dir = ./tests/examples/standard
 figure_dir = ./tests/figures
+archive_dir = ./tests/data/examples/archive/standard
 # Some handling of relative paths is included
 # (and is necessary for pre-built examples such as this one)
 # but absolute paths are encouraged.

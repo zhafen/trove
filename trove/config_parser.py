@@ -2,6 +2,7 @@
 import configparser
 import copy
 import os
+import numpy as np
 
 import augment
 
@@ -46,10 +47,12 @@ class ConfigParser( configparser.ConfigParser ):
         if fp is not None:
             self.read( fp )
 
+        # Required parameter
+        assert self.has_option( 'DEFAULT', 'root_data_dir' ), '"root_data_dir" parameter required.'
+
         # Setup a trove manager
         file_format = []
-        if self.has_option( 'DEFAULT', 'root_data_dir' ):
-            file_format.append( self.get( 'DEFAULT', 'root_data_dir' ) )
+        file_format.append( self.get( 'DEFAULT', 'root_data_dir' ) )
         file_format += [ '{}', '{}.troveflag' ]
         file_format = os.path.join( *file_format )
         ids = list( self.variations )
@@ -124,6 +127,14 @@ class ConfigParser( configparser.ConfigParser ):
              ]
 
         return self._data_dirs
+
+    @property
+    def unique_data_dirs( self ):
+
+        if not hasattr( self, '_unique_data_dirs' ):
+            self._unique_data_dirs = np.unique( self.data_dirs )
+
+        return self._unique_data_dirs
 
     def get_next_data_dir( self, *args, **kwargs ):
         '''Get the next data dir, and create it if it doesn't exist.
