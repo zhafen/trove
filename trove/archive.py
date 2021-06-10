@@ -2,12 +2,13 @@
 import argparse
 import os
 import subprocess
+import warnings
 
 import trove.config_parser as config_parser
 
 ########################################################################
 
-def archive( config_fp, verbose=True ):
+def archive( config_fp, verbose=True, use_shell=False ):
     '''Archive everything in the data directories.
 
     Args:
@@ -24,14 +25,11 @@ def archive( config_fp, verbose=True ):
 
     # Set up archive dir.
     if tcp.has_option( 'DEFAULT', 'archive_dir' ):
-        archive_dir = os.path.abspath( tcp.get( 'DEFAULT', 'archive_dir' ) )
+        archive_dir = tcp.get( 'DEFAULT', 'archive_dir' )
     else:
         raise KeyError( 'No "archive_dir" specified in config file. Cannot archive.' )
     if not os.path.exists( archive_dir ):
-        try:
-            os.makedirs( archive_dir, exist_ok=True )
-        except:
-            print( 'Tried and failed to make archive directory. May need to create manually.' )
+        warnings.warn( 'Archive directory {} may not exist.' )
 
     if verbose:
         print( 'Archiving data products:' )
@@ -44,23 +42,36 @@ def archive( config_fp, verbose=True ):
 
         # Move to the appropriate location
         data_dir = os.path.join( root_data_dir, variation )
+        print( '\nArchiving files in {}'.format( data_dir ) )
         os.chdir( data_dir )
 
-        # Tar
-        subprocess.run([
-            'tar',
-            '-cvf',
-            archive_filename,
-            '*',
-        ])
-
-        # Copy. Use rsync to allow cross-filesystem
-        subprocess.run([
-            'rsync',
-            '--progress',
-            archive_filename,
-            archive_dir,
-        ])
+        if not use_shell:
+            # Tar
+            subprocess.run([
+                'tar',
+                '-cvf',
+                archive_filename,
+                '*',
+            ])
+            # Copy. Use rsync to allow cross-filesystem
+            subprocess.run([
+                'rsync',
+                '--progress',
+                archive_filename,
+                archive_dir,
+            ])
+        else:
+            # Tar
+            os.system(
+                'tar -cvf {} *'.format( archive_filename )
+            )
+            # Copy
+            os.system(
+                'rsync --progress {} {}/'.format(
+                    archive_filename,
+                    archive_dir,
+                )
+            )
 
         # Change back
         os.chdir( starting_dir )
@@ -83,11 +94,17 @@ if __name__ == '__main__':
         help = 'Quiet down the output.',
         action = 'store_true',
     )
+    parser.add_argument(
+        '--use_shell',
+        help = 'Use os.system instead of subprocess.run.',
+        action = 'store_true',
+    )
     args = parser.parse_args()
 
     # Run
     archive(
         args.config_fp,
         not args.quiet,
+        not args.use_shell,
     )
 
