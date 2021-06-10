@@ -8,7 +8,7 @@ import trove.config_parser as config_parser
 
 ########################################################################
 
-def archive( config_fp, verbose=True, use_shell=False ):
+def archive( config_fp, verbose=True, use_shell=True ):
     '''Archive everything in the data directories.
 
     Args:
@@ -26,10 +26,14 @@ def archive( config_fp, verbose=True, use_shell=False ):
     # Set up archive dir.
     if tcp.has_option( 'DEFAULT', 'archive_dir' ):
         archive_dir = tcp.get( 'DEFAULT', 'archive_dir' )
+        if not use_shell:
+            archive_dir = os.path.abspath( archive_dir )
     else:
         raise KeyError( 'No "archive_dir" specified in config file. Cannot archive.' )
     if not os.path.exists( archive_dir ):
         warnings.warn( 'Archive directory {} may not exist.' )
+        if not use_shell:
+            os.makedirs( archive_dir, exist_ok=True )
 
     if verbose:
         print( 'Archiving data products:' )
@@ -45,7 +49,19 @@ def archive( config_fp, verbose=True, use_shell=False ):
         print( '\nArchiving files in {}'.format( data_dir ) )
         os.chdir( data_dir )
 
-        if not use_shell:
+        if use_shell:
+            # Tar
+            os.system(
+                'tar -cvf {} *'.format( archive_filename )
+            )
+            # Copy
+            os.system(
+                'rsync --progress {} {}/'.format(
+                    archive_filename,
+                    archive_dir,
+                )
+            )
+        else:
             # Tar
             subprocess.run([
                 'tar',
@@ -60,18 +76,6 @@ def archive( config_fp, verbose=True, use_shell=False ):
                 archive_filename,
                 archive_dir,
             ])
-        else:
-            # Tar
-            os.system(
-                'tar -cvf {} *'.format( archive_filename )
-            )
-            # Copy
-            os.system(
-                'rsync --progress {} {}/'.format(
-                    archive_filename,
-                    archive_dir,
-                )
-            )
 
         # Change back
         os.chdir( starting_dir )
@@ -95,8 +99,8 @@ if __name__ == '__main__':
         action = 'store_true',
     )
     parser.add_argument(
-        '--use_shell',
-        help = 'Use os.system instead of subprocess.run.',
+        '--use_subprocess',
+        help = 'Use subprocess.run instead of os.system.',
         action = 'store_true',
     )
     args = parser.parse_args()
@@ -105,6 +109,6 @@ if __name__ == '__main__':
     archive(
         args.config_fp,
         not args.quiet,
-        not args.use_shell,
+        not args.use_subprocess,
     )
 

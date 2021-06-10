@@ -49,10 +49,10 @@ class TestArchive( unittest.TestCase ):
 
     ########################################################################
 
-    def test_archive( self ):
+    def test_archive_subprocess( self ):
 
         # Main function
-        archive.archive( './tests/examples/standard/standard.trove' )
+        archive.archive( './tests/examples/standard/standard.trove', use_shell=False )
 
         # Check
         for archive_tar in [ 'identifier_A.tar', 'this_is_also_an_identifier.tar' ]:
@@ -61,12 +61,13 @@ class TestArchive( unittest.TestCase ):
 
     ########################################################################
 
-    def test_archive_command_line( self ):
+    def test_archive_command_line_subprocess( self ):
 
         subprocess.run([
             sys.executable,
             './archive.py',
             './tests/examples/standard/standard.trove',
+            '--use_subprocess',
         ])
 
         # Check
