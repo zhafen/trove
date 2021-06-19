@@ -15,15 +15,21 @@ import trove.config_parser as config_parser
 
 ########################################################################
 
-def run( config_fp, n_procs=4, max_loops=1000 ):
+def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
     '''Run the trove pipeline specified in the given config.
 
     Args:
         config_fp (str):
             Configuration file to use.
 
+        n_procs (int):
+            Number of processors to use when running a jug file.
+
         max_loops (int):
             Maximum loops before forcibly exiting.
+
+        cell_timeout (float or int):
+            Allowed execution time per cell when executing notebooks.
     '''
 
     # As a precaution, convert to absolute path
@@ -89,6 +95,7 @@ def run( config_fp, n_procs=4, max_loops=1000 ):
                 current_script,
                 config_fp,
                 tcp.get_next_data_dir(),
+                timeout = cell_timeout,
             )
         elif prefix == 'jug':
             run_output = run_jug(
@@ -140,7 +147,7 @@ def run_python( script_fp, config_fp ):
 
     return sp
 
-def run_python_notebook( script_fp, config_fp, output_dir ):
+def run_python_notebook( script_fp, config_fp, output_dir, timeout=1200 ):
     '''Code for running a python notebook.
 
     Args:
@@ -163,7 +170,7 @@ def run_python_notebook( script_fp, config_fp, output_dir ):
         nb = nbformat.read( f, as_version=4 )
 
     # Run
-    ep = ExecutePreprocessor( timeout=600 )
+    ep = ExecutePreprocessor( timeout=timeout )
     ep.preprocess( nb, {'metadata': {'path': os.getcwd() }} )
 
     # Save executed notebook
@@ -235,12 +242,17 @@ if __name__ == '__main__':
         help = 'Number of processors to use when performing multiprocessing.',
         default = 4,
     )
-    args = parser.parse_args()
     parser.add_argument(
         '-max_loops',
         type = int,
         help = 'Maximum number of times to run scripts.',
         default = 1000,
+    )
+    parser.add_argument(
+        '--cell_timeout',
+        type = float,
+        help = 'Allowed execution time per cell in seconds.',
+        default = 1200,
     )
     args = parser.parse_args()
 
@@ -249,5 +261,6 @@ if __name__ == '__main__':
         args.config_fp,
         args.n_processors,
         args.max_loops,
+        args.cell_timeout,
     )
 
