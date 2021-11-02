@@ -1,0 +1,79 @@
+########################################################################
+[DEFAULT]
+########################################################################
+# This section named "[DEFAULT]" contains the majority of
+# parameters used in the analysis.
+
+# Filetree parameters
+root_data_dir = ./tests/data/examples/standard
+code_dir = ./tests/examples/standard
+figure_dir = ./tests/figures
+archive_dir = ./tests/data/examples/archive/standard
+# Some handling of relative paths is included
+# (and is necessary for pre-built examples such as this one)
+# but absolute paths are encouraged.
+
+# Overall analysis parameters
+seed = 12345
+
+# Script options
+n = 1000
+low = 0
+high = 1000
+power = 1
+
+########################################################################
+[SCRIPTS]
+########################################################################
+# This section named "[SCRIPTS]" contains code that will be run.
+# Code will be run in order from lowest to highest number
+# The prefix determines how the code will be handled.
+
+# Preprocessing
+py.1 = ${code_dir}/pre.py
+
+# Main executable
+py.2 = ${code_dir}/main.py
+
+# Post-processing
+nb.3 = ${code_dir}/post.ipynb
+
+########################################################################
+[DATA PRODUCTS]
+########################################################################
+# This section helps convert existing pipelines to trove pipelines.
+# In particular it will check if the data products exist and mark that part
+# of the trove as complete if they do.
+
+py.1 = pre.hdf5
+py.2 = main.hdf5
+nb.3 = post*.hdf5
+
+########################################################################
+# Parameter Variations
+########################################################################
+# These sections are variations on the parameters to explore.
+# Each will create a trove of data.
+# The section name should be the identifier you would
+# like to use for that set of parameters.
+
+[identifier_A]
+
+[this_is_also_an_identifier]
+power = 3
+
+########################################################################
+# Global Parameter Variations
+########################################################################
+# This section includes further variations that will be applied
+# in turn to each variation above
+
+[low_n]
+# This argument is essential! It lets the parser know this is a global variation
+global = True
+n = 10
+
+[low_n_alternative_seed]
+global = True
+n = 10
+seed = 54321

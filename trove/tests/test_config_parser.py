@@ -29,3 +29,19 @@ class TestConfigParser( unittest.TestCase ):
             'this_is_also_an_identifier',
             'py.1'
         )
+
+########################################################################
+
+class TestGlobalVariation( unittest.TestCase ):
+
+    def test_get_next_variation( self ):
+
+        tcp = config_parser.ConfigParser(
+            './tests/examples/global_variations/global_variations.trove'
+        )
+
+        actual = tcp.get_next_variation()
+        assert actual == ( 'identifier_A', 'py.1' )
+
+        actual = tcp.get_next_global_variation()
+        assert actual == 'low_n'

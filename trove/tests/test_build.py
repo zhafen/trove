@@ -100,7 +100,7 @@ class TestLinkParams( unittest.TestCase ):
 
     ########################################################################
 
-    def test_link_params_variation( self ):
+    def test_link_params_specify_variation( self ):
 
         # Update
         pm = trove_build.link_params_to_config(
@@ -117,3 +117,22 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['power'] == 3
 
         assert pm['data_dir'] == './tests/data/examples/standard/this_is_also_an_identifier'
+
+    ########################################################################
+
+    def test_link_params_global_variation( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/global_variations/global_variations.trove',
+            n = 100,
+            high = 10,
+            power = 0,
+        )
+
+        # Check
+        assert pm['n'] == 10
+        assert pm['high'] == 1000
+        assert pm['power'] == 1
+
+        assert pm['data_dir'] == './tests/data/examples/standard/more_variations/low_n/identifier_A'

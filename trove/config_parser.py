@@ -3,6 +3,7 @@ import configparser
 import copy
 import os
 import numpy as np
+import warnings
 
 import augment
 
@@ -18,6 +19,7 @@ class ConfigParser( configparser.ConfigParser ):
         fp = None,
         empty_lines_in_values = False,
         interpolation = configparser.ExtendedInterpolation(),
+        global_variations_dirname = 'more_variations',
         *args,
         **kwargs
     ):
@@ -50,17 +52,33 @@ class ConfigParser( configparser.ConfigParser ):
         # Required parameter
         assert self.has_option( 'DEFAULT', 'root_data_dir' ), '"root_data_dir" parameter required.'
 
-        # Setup a trove manager
+        # Dangerous parameter to use
+        if self.has_option( 'DEFAULT', 'global' ):
+            warnings.warn(
+                'Found a parameter named "global" in the DEFAULT parameters.'
+                'global is the name of a specal parameter that indicates if there are global variations.'
+                'Please consider using a different parameter.'
+            )
+
+        # Setup the file format for a trove manager
         file_format = []
         file_format.append( self.get( 'DEFAULT', 'root_data_dir' ) )
-        file_format += [ '{}', '{}.troveflag' ]
+        # First for global variations, second for variations, third for scripts
+        file_format += [ '{}', '{}', '{}.troveflag' ]
         file_format = os.path.join( *file_format )
+
+        # Setup a trove manager
         ids = list( self.variations )
+        global_ids = [
+            os.path.join( global_variations_dirname, _ )
+            for _ in self.global_variations
+            if _ != ''
+        ]
         scripts = [
             _ for _ in self['SCRIPTS'].keys()
             if _ not in self.defaults()
         ]
-        self.manager = management.Manager( file_format, ids, scripts )
+        self.manager = management.Manager( file_format, global_ids, ids, scripts )
     
     ########################################################################
 
@@ -80,9 +98,15 @@ class ConfigParser( configparser.ConfigParser ):
         # Parse for variations on the parameters
         self.special_sections = [ 'DEFAULT', 'SCRIPTS', 'DATA PRODUCTS' ]
         self.variations = []
+        self.global_variations = [ '', ]
         for key in copy.deepcopy( self.keys() ):
             if key in self.special_sections:
                 continue
+            # Retrieve global variations
+            if self.has_option( key, 'global' ):
+                if self.get( key, 'global' ):
+                    self.global_variations.append( key )
+                    continue
             self.variations.append( key )
 
         # When no variations, just use the defaults
@@ -116,7 +140,16 @@ class ConfigParser( configparser.ConfigParser ):
             when_done = when_done,
             *args,
             **kwargs
-        )
+        )[1:]
+
+    def get_next_global_variation( self, when_done='done_flag', *args, **kwargs ):
+
+        global_variation = self.manager.get_next_args_to_use(
+            when_done = when_done,
+            *args,
+            **kwargs
+        )[0]
+        return os.path.split( global_variation )[-1]
 
     @property
     def data_dirs( self ):
