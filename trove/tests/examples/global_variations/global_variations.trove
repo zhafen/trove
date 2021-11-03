@@ -5,10 +5,10 @@
 # parameters used in the analysis.
 
 # Filetree parameters
-root_data_dir = ./tests/data/examples/standard
-code_dir = ./tests/examples/standard
+root_data_dir = ./tests/data/examples/global_variations
+code_dir = ./tests/examples/global_variations
 figure_dir = ./tests/figures
-archive_dir = ./tests/data/examples/archive/standard
+archive_dir = ./tests/data/examples/archive/global_variations
 # Some handling of relative paths is included
 # (and is necessary for pre-built examples such as this one)
 # but absolute paths are encouraged.

@@ -69,11 +69,12 @@ class ConfigParser( configparser.ConfigParser ):
 
         # Setup a trove manager
         ids = list( self.variations )
-        global_ids = [
-            os.path.join( global_variations_dirname, _ )
-            for _ in self.global_variations
-            if _ != ''
-        ]
+        global_ids = []
+        for global_variation in self.global_variations:
+            if global_variation != '':
+                global_ids.append( os.path.join( global_variations_dirname, global_variation ) )
+            else:
+                global_ids.append( '' )
         scripts = [
             _ for _ in self['SCRIPTS'].keys()
             if _ not in self.defaults()
@@ -136,11 +137,16 @@ class ConfigParser( configparser.ConfigParser ):
 
     def get_next_variation( self, when_done='done_flag', *args, **kwargs ):
 
-        return self.manager.get_next_args_to_use(
+        variation = self.manager.get_next_args_to_use(
             when_done = when_done,
             *args,
             **kwargs
-        )[1:]
+        )
+
+        if variation != when_done:
+            variation = variation[1:]
+
+        return variation
 
     def get_next_global_variation( self, when_done='done_flag', *args, **kwargs ):
 

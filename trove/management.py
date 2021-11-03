@@ -47,22 +47,27 @@ class Manager( object ):
             Filename for a given combination of args.
         '''
 
-        return self.file_format.format( *args )
+        filepath = self.file_format.format( *args )
+
+        # Redo with os.path for better formatting
+        filepath = os.path.join( *filepath.split( '/' ) )
+
+        return filepath
 
     ########################################################################
 
-    def set_order( self, value ):
+    def set_order( self, values ):
         '''Change the order in which the trove manager loops through the files.
 
         Args:
-            value (list of ints):
+            values (list of ints):
                 New order, with one integer per argument provided to the file
                 format. The integer corresponds to the order in which you wish
                 to loop through the files, with lower values looping through
                 first.
         '''
 
-        self.combinations_order = value
+        self.combinations_order = values
 
         del self.combinations
 
