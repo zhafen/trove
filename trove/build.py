@@ -11,7 +11,6 @@ def link_params_to_config(
         config_fp,
         variation = None,
         global_variation = None,
-        split_existing_and_new = False,
         **pm
     ):
     '''Link the values of a set of existing params to those in a config,
@@ -24,11 +23,6 @@ def link_params_to_config(
         variation (str):
             Specific variation to select from the config.
             If None, defaults to the next in the trove.
-
-        split_existing_and_new (bool):
-            If True return two dictionaries, one for parameters that already    
-            existed and may have been updated, and one for new parameters
-            that were added.
 
     Kwargs:
         All parameters to update.
@@ -79,10 +73,6 @@ def link_params_to_config(
         tcp.manager.get_file( global_variation_dir, variation, 'FOO' )
     )
 
-    # Split case
-    if split_existing_and_new:
-        return pm, pm_new
-
-    # Routine case
+    # Update and return
     pm.update( pm_new )
     return pm

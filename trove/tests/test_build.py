@@ -32,34 +32,6 @@ class TestLinkParams( unittest.TestCase ):
 
     ########################################################################
 
-    def test_link_params_split( self ):
-
-        # Update parameters
-        pm, new_pm = trove_build.link_params_to_config(
-            config_fp = './tests/examples/basic.trove',
-            split_existing_and_new = True,
-            a = 2,
-            dog = False,
-            cat = 'not best',
-            not_in_config = 'yeah',
-            errors = 100,
-            **{ 'bad dog': False, },
-        )
-
-        # Check
-        assert pm['a'] == 1
-        assert pm['dog']
-        assert not pm['bad dog']
-        assert pm['cat'] == 'the best'
-        assert pm['not_in_config'] == 'yeah'
-        assert pm['errors'] == None
-        assert 'data_dir' in new_pm
-        assert 'data_dir' not in pm
-        assert 'bird' in new_pm
-        assert 'bird' not in pm
-
-    ########################################################################
-
     def test_link_params_init( self ):
 
         # Update parameters
