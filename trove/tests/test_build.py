@@ -135,4 +135,4 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['high'] == 1000
         assert pm['power'] == 1
 
-        assert pm['data_dir'] == './tests/data/examples/standard/more_variations/low_n/identifier_A'
+        assert pm['data_dir'] == './tests/data/examples/global_variations/more_variations/low_n/identifier_A'

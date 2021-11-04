@@ -1,6 +1,7 @@
 '''Tools for building the pipeline.'''
 
 import ast
+import copy
 import os
 import trove.config_parser as config_parser
 
@@ -9,6 +10,7 @@ import trove.config_parser as config_parser
 def link_params_to_config(
         config_fp,
         variation = None,
+        global_variation = None,
         split_existing_and_new = False,
         **pm
     ):
@@ -43,46 +45,44 @@ def link_params_to_config(
     if variation is None:
         variation_args = tcp.get_next_variation()
         variation = variation_args[0]
-        data_dir = tcp.get_next_data_dir()
-    else:
-        data_dir = os.path.dirname( tcp.manager.get_file( variation, 'FOO' ) )
 
-    # Get the data dir
+    if global_variation is None:
+        global_variation = tcp.get_next_global_variation()
+        if global_variation != '':
+            global_variation_dir = os.path.join( tcp.global_variations_dirname, global_variation )
+        else:
+            global_variation_dir = ''
 
-    # Account for different formatting
-    if variation == 'DEFAULT':
-        options = tcp.defaults()
-    else:
-        options = tcp.options( variation )
+    # Defaults
+    pm_new = copy.deepcopy( tcp._defaults )
 
-    # Update loop
-    pm_new = {}
-    for key in options:
+    # Global variation options
+    if global_variation != '':
+        pm_new.update( tcp._sections[global_variation] )
 
-        # Get value from config
-        value_str = tcp.get( variation, key, fallback=None )
-        if value_str is not None:
+    # Variation options
+    if variation != 'DEFAULT':
+        pm_new.update( tcp._sections[variation] )
+
+    # Interpret strings
+    for key, item in pm_new.items():
+        if item is not None:
             # We'll try to evaluate the argument, but fallback to the str rep
             try:
-                value = ast.literal_eval( value_str )
+                pm_new[key] = ast.literal_eval( item )
             except ( SyntaxError, ValueError ) as e:
-                value = value_str
+                pass
 
-        # Assign
-        if not split_existing_and_new:
-            pm[key] = value
+    # Store data dir and variation name
+    pm_new['variation'] = variation
+    pm_new['data_dir'] = os.path.dirname(
+        tcp.manager.get_file( global_variation_dir, variation, 'FOO' )
+    )
 
-        else:
-            if key in pm:
-                pm[key] = value
-            else:
-                pm_new[key] = value
-
-    # Return
+    # Split case
     if split_existing_and_new:
-        pm_new['data_dir'] = data_dir
-        pm_new['variation'] = variation
         return pm, pm_new
-    pm['data_dir'] = data_dir
-    pm['variation'] = variation
+
+    # Routine case
+    pm.update( pm_new )
     return pm
