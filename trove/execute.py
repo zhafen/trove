@@ -45,6 +45,7 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
 
         # Identify next to run
         next_variation = tcp.get_next_variation()
+        next_global_variation = tcp.get_next_global_variation()
 
         # Check if done
         loop_count += 1
@@ -70,7 +71,8 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
         # Get filepaths
         script_id = next_variation[-1]
         current_script = tcp.get( 'SCRIPTS', script_id )
-        current_flag_file = tcp.get_flag_file( *next_variation )
+        global_id = tcp.format_global_variation( next_global_variation )
+        current_flag_file = tcp.get_flag_file( global_id, *next_variation )
 
         # Run start announcement
         loop_time = time.time()

@@ -69,9 +69,7 @@ def link_params_to_config(
 
     # Store data dir and variation name
     pm_new['variation'] = variation
-    pm_new['data_dir'] = os.path.dirname(
-        tcp.manager.get_file( global_variation_dir, variation, 'FOO' )
-    )
+    pm_new['data_dir'] = tcp.get_next_data_dir( variation, global_variation )
 
     # Update and return
     pm.update( pm_new )

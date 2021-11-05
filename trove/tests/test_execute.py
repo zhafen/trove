@@ -17,6 +17,10 @@ import trove.execute as execute
 
 class TestExecutable( unittest.TestCase ):
 
+    def setUp( self ):
+
+        self.config_fp = './tests/examples/standard/standard.trove' 
+
     def tearDown( self ):
 
         data_dirs = [
@@ -62,7 +66,7 @@ class TestExecutable( unittest.TestCase ):
 
     def test_executable_fn( self ):
 
-        execute.run( './tests/examples/standard/standard.trove' )
+        execute.run( self.config_fp )
 
         self.check()
 
@@ -73,7 +77,7 @@ class TestExecutable( unittest.TestCase ):
         subprocess.run([
             sys.executable,
             './execute.py',
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
         ])
 
         self.check()
@@ -86,7 +90,7 @@ class TestExecutable( unittest.TestCase ):
             sys.executable,
             './bin/trove',
             'execute',
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
         ])
 
         self.check()
@@ -117,6 +121,86 @@ class TestExecutable( unittest.TestCase ):
                 assert os.path.exists( ofp )
 
 ########################################################################
+
+class TestExecutableGlobalVariations( unittest.TestCase ):
+
+    def setUp( self ):
+
+        self.config_fp = './tests/examples/global_variations/global_variations.trove' 
+
+    def tearDown( self ):
+
+        data_dirs = [
+            './tests/data/examples/global_variations/more_variations' ,
+        ]
+        for data_dir in data_dirs:
+            if os.path.exists( data_dir ):
+                shutil.rmtree( data_dir )
+
+    def check( self ):
+
+        # Check
+        pre_fp = './tests/data/examples/global_variations/more_variations/this_is_also_an_identifier/pre.hdf5'
+        pre = h5py.File( pre_fp, 'r' )
+        main_fp = './tests/data/examples/global_variations/more_variations/this_is_also_an_identifier/main.hdf5'
+        main = h5py.File( main_fp, 'r' )
+        assert main['raised_numbers'][...].size == 10
+        power = (
+            np.log10( main['raised_numbers'][...] ) / 
+            np.log10( pre['numbers'][...] )
+        )
+        npt.assert_allclose( power, np.full( 1000, 3. ) )
+
+        # Check more
+        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+            for script in [ 'py.1', 'py.2' ]:
+
+                ofp = './tests/data/examples/global_variations/more_variations/{}/{}.troveflag'.format(
+                    ident,
+                    script,
+                )
+                assert os.path.exists( ofp )
+
+        # Check figures
+        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+            ffp = './tests/figures/last_digits_{}.pdf'.format( ident )
+            assert os.path.exists( ffp )
+
+    ########################################################################
+
+    def test_executable_fn( self ):
+
+        execute.run( self.config_fp )
+
+        self.check()
+
+    ########################################################################
+
+    def test_executable( self ):
+
+        subprocess.run([
+            sys.executable,
+            './execute.py',
+            self.config_fp,
+        ])
+
+        self.check()
+
+    ########################################################################
+
+    def test_executable_bin( self ):
+
+        subprocess.run([
+            sys.executable,
+            './bin/trove',
+            'execute',
+            self.config_fp,
+        ])
+
+        self.check()
+ 
+    ########################################################################
+
 
 class TestExecutableJug( unittest.TestCase ):
 

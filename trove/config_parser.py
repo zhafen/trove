@@ -69,12 +69,7 @@ class ConfigParser( configparser.ConfigParser ):
 
         # Setup a trove manager
         ids = list( self.variations )
-        global_ids = []
-        for global_variation in self.global_variations:
-            if global_variation != '':
-                global_ids.append( os.path.join( global_variations_dirname, global_variation ) )
-            else:
-                global_ids.append( '' )
+        global_ids = [ self.format_global_variation( _ ) for _ in self.global_variations ]
         scripts = [
             _ for _ in self['SCRIPTS'].keys()
             if _ not in self.defaults()
@@ -143,10 +138,10 @@ class ConfigParser( configparser.ConfigParser ):
             **kwargs
         )
 
-        if variation != when_done:
-            variation = variation[1:]
+        if variation == 'done_flag':
+            return variation
 
-        return variation
+        return variation[1:]
 
     def get_next_global_variation( self, when_done='done_flag', *args, **kwargs ):
 
@@ -154,8 +149,19 @@ class ConfigParser( configparser.ConfigParser ):
             when_done = when_done,
             *args,
             **kwargs
-        )[0]
-        return os.path.split( global_variation )[-1]
+        )
+
+        if global_variation == 'done_flag':
+            return global_variation
+
+        return os.path.split( global_variation[0] )[-1]
+
+    def format_global_variation( self, global_variation ):
+
+        if global_variation != '':
+            return os.path.join( self.global_variations_dirname, global_variation )
+        else:
+            return global_variation
 
     @property
     def data_dirs( self ):
@@ -175,12 +181,19 @@ class ConfigParser( configparser.ConfigParser ):
 
         return self._unique_data_dirs
 
-    def get_next_data_dir( self, *args, **kwargs ):
+    def get_next_data_dir( self, variation=None, global_variation=None ):
         '''Get the next data dir, and create it if it doesn't exist.
         '''
 
+        if variation is None:
+            variation = self.get_next_variation()
+
+        if global_variation is None:
+            global_variation = self.get_next_global_variation()
+        global_id = self.format_global_variation( global_variation )
+
         next_dir = os.path.dirname(
-            self.manager.get_incomplete_data_files()[0]
+            self.manager.get_file( global_id, variation, 'FOO' )
         )
 
         if not os.path.exists( next_dir ):
