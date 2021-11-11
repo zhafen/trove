@@ -80,7 +80,7 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
             '\n####################################' + \
             '####################################\n' + \
             'Running {}\n'.format( current_script ) + \
-            '    Variation: {}'.format( next_variation[:-1] ) + \
+            '    Variation: {}'.format( next_variation[0] ) + \
             '\n----------------------------------' + \
             '------------------------------------\n'
         )

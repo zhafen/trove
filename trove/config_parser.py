@@ -186,7 +186,7 @@ class ConfigParser( configparser.ConfigParser ):
         '''
 
         if variation is None:
-            variation = self.get_next_variation()
+            variation = self.get_next_variation()[0]
 
         if global_variation is None:
             global_variation = self.get_next_global_variation()

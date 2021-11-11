@@ -140,26 +140,28 @@ class TestExecutableGlobalVariations( unittest.TestCase ):
     def check( self ):
 
         # Check
-        pre_fp = './tests/data/examples/global_variations/more_variations/this_is_also_an_identifier/pre.hdf5'
+        pre_fp = './tests/data/examples/global_variations/more_variations/low_n/this_is_also_an_identifier/pre.hdf5'
         pre = h5py.File( pre_fp, 'r' )
-        main_fp = './tests/data/examples/global_variations/more_variations/this_is_also_an_identifier/main.hdf5'
+        main_fp = './tests/data/examples/global_variations/more_variations/low_n/this_is_also_an_identifier/main.hdf5'
         main = h5py.File( main_fp, 'r' )
         assert main['raised_numbers'][...].size == 10
         power = (
             np.log10( main['raised_numbers'][...] ) / 
             np.log10( pre['numbers'][...] )
         )
-        npt.assert_allclose( power, np.full( 1000, 3. ) )
+        npt.assert_allclose( power, np.full( main['raised_numbers'][...].size, 3. ) )
 
         # Check more
-        for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
-            for script in [ 'py.1', 'py.2' ]:
+        for glob_v in [ 'low_n', 'low_n_alternative_seed' ]:
+            for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
+                for script in [ 'py.1', 'py.2' ]:
 
-                ofp = './tests/data/examples/global_variations/more_variations/{}/{}.troveflag'.format(
-                    ident,
-                    script,
-                )
-                assert os.path.exists( ofp )
+                    ofp = './tests/data/examples/global_variations/more_variations/{}/{}/{}.troveflag'.format(
+                        glob_v,
+                        ident,
+                        script,
+                    )
+                    assert os.path.exists( ofp )
 
         # Check figures
         for ident in [ 'identifier_A', 'this_is_also_an_identifier' ]:
@@ -200,7 +202,6 @@ class TestExecutableGlobalVariations( unittest.TestCase ):
         self.check()
  
     ########################################################################
-
 
 class TestExecutableJug( unittest.TestCase ):
 
