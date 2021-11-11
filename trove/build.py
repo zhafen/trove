@@ -9,6 +9,7 @@ import trove.config_parser as config_parser
 
 def link_params_to_config(
         config_fp,
+        script_id = None,
         variation = None,
         global_variation = None,
         **pm
@@ -35,28 +36,28 @@ def link_params_to_config(
     # Read the config
     tcp = config_parser.ConfigParser( config_fp )
 
-    # Identify which variation is next
-    if variation is None:
-        variation_args = tcp.get_next_variation()
-        variation = variation_args[0]
-
-    if global_variation is None:
-        global_variation = tcp.get_next_global_variation()
-        if global_variation != '':
-            global_variation_dir = os.path.join( tcp.global_variations_dirname, global_variation )
-        else:
-            global_variation_dir = ''
+    # Get the next variation
+    script_id, variation, global_variation = tcp.get_next_variation_args(
+        script_id,
+        variation,
+        global_variation,
+        when_done = 'return_last',
+    )
 
     # Defaults
-    pm_new = copy.deepcopy( tcp._defaults )
+    pm_new = {}
+    for option in tcp.defaults():
+        pm_new[option] = tcp.get( 'DEFAULT', option )
 
     # Global variation options
     if global_variation != '':
-        pm_new.update( tcp._sections[global_variation] )
+        for option in tcp.options( global_variation, exclude_defaults=True ):
+            pm_new[option] = tcp.get( global_variation, option )
 
     # Variation options
     if variation != 'DEFAULT':
-        pm_new.update( tcp._sections[variation] )
+        for option in tcp.options( variation, exclude_defaults=True ):
+            pm_new[option] = tcp.get( variation, option )
 
     # Interpret strings
     for key, item in pm_new.items():
@@ -68,8 +69,10 @@ def link_params_to_config(
                 pass
 
     # Store data dir and variation name
+    pm_new['script_id'] = script_id
     pm_new['variation'] = variation
-    pm_new['data_dir'] = tcp.get_next_data_dir( variation, global_variation )
+    pm_new['global_variation'] = global_variation
+    pm_new['data_dir'] = tcp.get_data_dir( variation, global_variation, script_id )
 
     # Update and return
     pm.update( pm_new )

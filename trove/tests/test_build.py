@@ -108,3 +108,27 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['power'] == 1
 
         assert pm['data_dir'] == './tests/data/examples/global_variations/more_variations/low_n/identifier_A'
+
+    ########################################################################
+
+    def test_link_params_specify_global_variation( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/global_variations/global_variations.trove',
+            script_id = 'py.1',
+            variation = 'identifier_A',
+            global_variation = 'plotting_change',
+            n = 100,
+            high = 10,
+            power = 0,
+        )
+
+        # Check
+        assert pm['n'] == 1000
+        assert pm['high'] == 1000
+        assert pm['power'] == 1
+
+        assert pm['script_id'] == 'py.1'
+        assert pm['data_dir'] == './tests/data/examples/global_variations/identifier_A'
+        assert pm['used_figure_dir'] == './tests/figures/more_variations/plotting_change'

@@ -1,4 +1,5 @@
 '''Tools for building the pipeline.'''
+import ast
 import configparser
 import copy
 import os
@@ -69,13 +70,26 @@ class ConfigParser( configparser.ConfigParser ):
 
         # Setup a trove manager
         ids = list( self.variations )
-        global_ids = [ self.format_global_variation( _ ) for _ in self.global_variations ]
+        global_ids = [ self.get_global_variation_dir( _ ) for _ in self.global_variations ]
         scripts = [
             _ for _ in self['SCRIPTS'].keys()
             if _ not in self.defaults()
         ]
         self.manager = management.Manager( file_format, global_ids, ids, scripts )
     
+    ########################################################################
+
+    def options(self, section, exclude_defaults=False ):
+        """Return a list of option names for the given section name."""
+        try:
+            opts = self._sections[section].copy()
+        except KeyError:
+            raise configparser.NoSectionError(section) from None
+        if not exclude_defaults:
+            opts.update(self._defaults)
+        return list(opts.keys())
+
+
     ########################################################################
 
     def read( self, *args, **kwargs ):
@@ -130,70 +144,94 @@ class ConfigParser( configparser.ConfigParser ):
 
     ########################################################################
 
-    def get_next_variation( self, when_done='done_flag', *args, **kwargs ):
+    def get_next_variation_args(
+        self,
+        script_id = None,
+        variation = None,
+        global_variation = None,
+        when_done = 'done_flag'
+    ):
 
-        variation = self.manager.get_next_args_to_use(
+        variation_args = self.manager.get_next_args_to_use(
             when_done = when_done,
-            *args,
-            **kwargs
         )
 
-        if variation == 'done_flag':
-            return variation
+        if variation_args == 'done_flag':
+            return variation_args
 
-        return variation[1:]
+        if script_id is None:
+            script_id = variation_args[2]
+        if variation is None:
+            variation = variation_args[1]
+        if global_variation is None:
+            global_variation = os.path.split( variation_args[0] )[-1]
 
-    def get_next_global_variation( self, when_done='done_flag', *args, **kwargs ):
+        return script_id, variation, global_variation
 
-        global_variation = self.manager.get_next_args_to_use(
+    ########################################################################
+
+    def get_next_script_id( self, when_done='done_flag' ):
+
+        variation_args = self.manager.get_next_args_to_use(
             when_done = when_done,
-            *args,
-            **kwargs
         )
 
-        if global_variation == 'done_flag':
-            return global_variation
+        if variation_args == 'done_flag':
+            return variation_args
 
-        return os.path.split( global_variation[0] )[-1]
+        return variation_args[2]
 
-    def format_global_variation( self, global_variation ):
+    ########################################################################
+
+    def get_next_variation( self, when_done='done_flag' ):
+
+        variation_args = self.manager.get_next_args_to_use(
+            when_done = when_done,
+        )
+
+        if variation_args == 'done_flag':
+            return variation_args
+
+        return variation_args[1]
+
+    ########################################################################
+
+    def get_next_global_variation( self, when_done='done_flag' ):
+
+        variation_args = self.manager.get_next_args_to_use(
+            when_done = when_done,
+        )
+
+        if variation_args == 'done_flag':
+            return variation_args
+
+        return os.path.split( variation_args[0] )[-1]
+
+    ########################################################################
+
+    def get_global_variation_dir( self, global_variation ):
 
         if global_variation != '':
             return os.path.join( self.global_variations_dirname, global_variation )
         else:
             return global_variation
 
-    @property
-    def data_dirs( self ):
+    ########################################################################
 
-        if not hasattr( self, '_data_dirs' ):
-            self._data_dirs = [
-                os.path.dirname( _ ) for _ in self.manager.data_files
-             ]
-
-        return self._data_dirs
-
-    @property
-    def unique_data_dirs( self ):
-
-        if not hasattr( self, '_unique_data_dirs' ):
-            self._unique_data_dirs = np.unique( self.data_dirs )
-
-        return self._unique_data_dirs
-
-    def get_next_data_dir( self, variation=None, global_variation=None ):
+    def get_data_dir( self, variation, global_variation, script_id ):
         '''Get the next data dir, and create it if it doesn't exist.
         '''
 
-        if variation is None:
-            variation = self.get_next_variation()[0]
-
-        if global_variation is None:
-            global_variation = self.get_next_global_variation()
-        global_id = self.format_global_variation( global_variation )
+        # Get the global variation used for the data dir.
+        if self.has_option( global_variation, 'use_variation_data_dir' ):
+            use_variation_data_dir = self.get( global_variation, 'use_variation_data_dir' )
+            use_variation_data_dir = ast.literal_eval( use_variation_data_dir )
+            if script_id in use_variation_data_dir:
+                global_variation = ''
+        global_variation_dir = self.get_global_variation_dir( global_variation )
 
         next_dir = os.path.dirname(
-            self.manager.get_file( global_id, variation, 'FOO' )
+            self.manager.get_file( global_variation_dir, variation, 'FOO' )
         )
 
         if not os.path.exists( next_dir ):
@@ -205,6 +243,24 @@ class ConfigParser( configparser.ConfigParser ):
 
         return next_dir
 
-    def get_flag_file( self, *args ):
+    ########################################################################
 
-        return self.manager.get_file( *args )
+    @property
+    def data_dirs( self ):
+
+        if not hasattr( self, '_data_dirs' ):
+            self._data_dirs = [
+                os.path.dirname( _ ) for _ in self.manager.data_files
+             ]
+
+        return self._data_dirs
+
+    ########################################################################
+
+    @property
+    def unique_data_dirs( self ):
+
+        if not hasattr( self, '_unique_data_dirs' ):
+            self._unique_data_dirs = np.unique( self.data_dirs )
+
+        return self._unique_data_dirs

@@ -22,6 +22,9 @@ low = 0
 high = 1000
 power = 1
 
+# Plotting options
+primary_color = 'k'
+
 ########################################################################
 [SCRIPTS]
 ########################################################################
@@ -77,3 +80,12 @@ n = 10
 global = True
 n = 10
 seed = 54321
+	
+[plotting_change]
+global = True
+primary_color = 'r'
+used_figure_dir = ${identifier_A:figure_dir}/more_variations/plotting_change
+use_variation_data_dir = [
+	'py.1',
+	'py.2',
+	]

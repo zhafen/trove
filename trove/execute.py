@@ -43,13 +43,16 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
     start_time = time.time()
     while True:
 
-        # Identify next to run
-        next_variation = tcp.get_next_variation()
-        next_global_variation = tcp.get_next_global_variation()
+        # Get the next variation
+        variation_args = tcp.get_next_variation_args(
+            script_id,
+            variation,
+            global_variation
+        )
 
         # Check if done
         loop_count += 1
-        if next_variation == 'done_flag':
+        if variation_args == 'done_flag':
             print(
                 '\n####################################' + \
                 '####################################\n' + \
@@ -68,19 +71,26 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
             )
             break
 
+        # Separate values from the variation args
+        script_id, variation, global_variation = variation_args
+
         # Get filepaths
-        script_id = next_variation[-1]
+        next_data_dir = tcp.get_data_dir( variation, global_variation, script_id )
         current_script = tcp.get( 'SCRIPTS', script_id )
-        global_id = tcp.format_global_variation( next_global_variation )
-        current_flag_file = tcp.get_flag_file( global_id, *next_variation )
+        current_flag_file = os.path.join( next_data_dir, '{}.troveflag'.format( script_id) )
 
         # Run start announcement
         loop_time = time.time()
+        if global_variation != '':
+            global_variation_str = '\n    Global Variation: {}'.format( global_variation )
+        else:
+            global_variation_str = ''
         print(
             '\n####################################' + \
             '####################################\n' + \
             'Running {}\n'.format( current_script ) + \
-            '    Variation: {}'.format( next_variation[0] ) + \
+            '    Variation: {}'.format( variation ) + \
+            global_variation_str + \
             '\n----------------------------------' + \
             '------------------------------------\n'
         )
@@ -96,14 +106,14 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
             run_output = run_python_notebook(
                 current_script,
                 config_fp,
-                tcp.get_next_data_dir(),
+                next_data_dir,
                 timeout = cell_timeout,
             )
         elif prefix == 'jug':
             run_output = run_jug(
                 current_script,
                 config_fp,
-                tcp.get_next_data_dir(),
+                next_data_dir,
                 script_id,
                 n_procs,
             )
@@ -116,8 +126,9 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
                 current_script,
                 time.time() - loop_time,
             ) + \
-            '    Variation: {}\n'.format( next_variation[:-1] ) + \
-            '####################################' + \
+            '    Variation: {}'.format( variation ) + \
+            global_variation_str + \
+            '\n####################################' + \
             '####################################\n'
         )
         pathlib.Path( current_flag_file ).touch()
