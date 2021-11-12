@@ -84,7 +84,7 @@ seed = 54321
 [plotting_change]
 global = True
 primary_color = 'r'
-used_figure_dir = ${identifier_A:figure_dir}/more_variations/plotting_change
+figure_dir = ${DEFAULT:figure_dir}/more_variations/plotting_change
 use_variation_data_dir = [
 	'py.1',
 	'py.2',

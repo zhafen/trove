@@ -68,11 +68,22 @@ def link_params_to_config(
             except ( SyntaxError, ValueError ) as e:
                 pass
 
-    # Store data dir and variation name
+    # Store variations
+    pm_new['config_fp'] = config_fp
     pm_new['script_id'] = script_id
     pm_new['variation'] = variation
     pm_new['global_variation'] = global_variation
-    pm_new['data_dir'] = tcp.get_data_dir( variation, global_variation, script_id )
+
+    # Store data_dirs
+    # Note that the data dir can change for different scripts
+    pm_new['data_dirs'] = {}
+    for script_id_i in tcp.scripts:
+        pm_new['data_dirs'][script_id_i] = tcp.get_data_dir(
+            variation,
+            global_variation,
+            script_id_i
+        )
+    pm_new['data_dir'] = pm_new['data_dirs'][script_id]
 
     # Update and return
     pm.update( pm_new )

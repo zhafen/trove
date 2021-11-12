@@ -70,12 +70,13 @@ class ConfigParser( configparser.ConfigParser ):
 
         # Setup a trove manager
         ids = list( self.variations )
-        global_ids = [ self.get_global_variation_dir( _ ) for _ in self.global_variations ]
-        scripts = [
+        global_ids = list( self.global_variations )
+        self.scripts = [
             _ for _ in self['SCRIPTS'].keys()
             if _ not in self.defaults()
         ]
-        self.manager = management.Manager( file_format, global_ids, ids, scripts )
+        self.manager = management.Manager( file_format, global_ids, ids, self.scripts )
+        self.manager.get_file = self.get_flag_file
     
     ########################################################################
 
@@ -88,7 +89,6 @@ class ConfigParser( configparser.ConfigParser ):
         if not exclude_defaults:
             opts.update(self._defaults)
         return list(opts.keys())
-
 
     ########################################################################
 
@@ -164,48 +164,9 @@ class ConfigParser( configparser.ConfigParser ):
         if variation is None:
             variation = variation_args[1]
         if global_variation is None:
-            global_variation = os.path.split( variation_args[0] )[-1]
+            global_variation = variation_args[0]
 
         return script_id, variation, global_variation
-
-    ########################################################################
-
-    def get_next_script_id( self, when_done='done_flag' ):
-
-        variation_args = self.manager.get_next_args_to_use(
-            when_done = when_done,
-        )
-
-        if variation_args == 'done_flag':
-            return variation_args
-
-        return variation_args[2]
-
-    ########################################################################
-
-    def get_next_variation( self, when_done='done_flag' ):
-
-        variation_args = self.manager.get_next_args_to_use(
-            when_done = when_done,
-        )
-
-        if variation_args == 'done_flag':
-            return variation_args
-
-        return variation_args[1]
-
-    ########################################################################
-
-    def get_next_global_variation( self, when_done='done_flag' ):
-
-        variation_args = self.manager.get_next_args_to_use(
-            when_done = when_done,
-        )
-
-        if variation_args == 'done_flag':
-            return variation_args
-
-        return os.path.split( variation_args[0] )[-1]
 
     ########################################################################
 
@@ -222,18 +183,11 @@ class ConfigParser( configparser.ConfigParser ):
         '''Get the next data dir, and create it if it doesn't exist.
         '''
 
-        # Get the global variation used for the data dir.
-        if self.has_option( global_variation, 'use_variation_data_dir' ):
-            use_variation_data_dir = self.get( global_variation, 'use_variation_data_dir' )
-            use_variation_data_dir = ast.literal_eval( use_variation_data_dir )
-            if script_id in use_variation_data_dir:
-                global_variation = ''
-        global_variation_dir = self.get_global_variation_dir( global_variation )
+        # Get the dir
+        flag_file = self.get_flag_file( global_variation, variation, script_id )
+        next_dir = os.path.dirname( flag_file )
 
-        next_dir = os.path.dirname(
-            self.manager.get_file( global_variation_dir, variation, 'FOO' )
-        )
-
+        # Make sure it exists
         if not os.path.exists( next_dir ):
             print(
                 'No data directory at {}\n'.format( next_dir ) + \
@@ -242,6 +196,29 @@ class ConfigParser( configparser.ConfigParser ):
             os.makedirs( next_dir, exist_ok=True )
 
         return next_dir
+
+    ########################################################################
+
+    def get_flag_file( self, global_variation, variation, script_id ):
+
+        # Get the global variation used for the data dir.
+        if self.has_option( global_variation, 'use_variation_data_dir' ):
+            use_variation_data_dir = self.get( global_variation, 'use_variation_data_dir' )
+            use_variation_data_dir = ast.literal_eval( use_variation_data_dir )
+            if script_id in use_variation_data_dir:
+                global_variation = ''
+        global_variation_dir = self.get_global_variation_dir( global_variation )
+
+        flag_file = self.manager.file_format.format(
+            global_variation_dir,
+            variation,
+            script_id
+        )
+
+        # Account for empty dirs
+        flag_file =  os.path.join( *flag_file.split( '/' ) )
+
+        return flag_file
 
     ########################################################################
 

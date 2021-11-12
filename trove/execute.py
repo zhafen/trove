@@ -44,11 +44,7 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
     while True:
 
         # Get the next variation
-        variation_args = tcp.get_next_variation_args(
-            script_id,
-            variation,
-            global_variation
-        )
+        variation_args = tcp.get_next_variation_args()
 
         # Check if done
         loop_count += 1

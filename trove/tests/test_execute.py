@@ -136,6 +136,9 @@ class TestExecutableGlobalVariations( unittest.TestCase ):
         for data_dir in data_dirs:
             if os.path.exists( data_dir ):
                 shutil.rmtree( data_dir )
+        figure_dir = './tests/figures'
+        if os.path.exists( figure_dir ):
+            shutil.rmtree( figure_dir )
 
     def check( self ):
 
@@ -224,7 +227,7 @@ class TestExecutableJug( unittest.TestCase ):
 
         time_taken = time.time() - start_time
 
-        assert time_taken < 5, "Parallelization is not functioning."
+        assert time_taken < 10, "Parallelization is not functioning."
 
         # Check
         main_fp = './tests/data/examples/jug/less_low/primes.hdf5'

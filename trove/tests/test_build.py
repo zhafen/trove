@@ -131,4 +131,4 @@ class TestLinkParams( unittest.TestCase ):
 
         assert pm['script_id'] == 'py.1'
         assert pm['data_dir'] == './tests/data/examples/global_variations/identifier_A'
-        assert pm['used_figure_dir'] == './tests/figures/more_variations/plotting_change'
+        assert pm['figure_dir'] == './tests/figures/more_variations/plotting_change'
