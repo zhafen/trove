@@ -179,7 +179,7 @@ class ConfigParser( configparser.ConfigParser ):
 
     ########################################################################
 
-    def get_data_dir( self, variation, global_variation, script_id ):
+    def get_data_dir( self, variation, global_variation, script_id, create=True ):
         '''Get the next data dir, and create it if it doesn't exist.
         '''
 
@@ -188,7 +188,7 @@ class ConfigParser( configparser.ConfigParser ):
         next_dir = os.path.dirname( flag_file )
 
         # Make sure it exists
-        if not os.path.exists( next_dir ):
+        if not os.path.exists( next_dir ) and create:
             print(
                 'No data directory at {}\n'.format( next_dir ) + \
                 'Creating one.'
@@ -216,7 +216,7 @@ class ConfigParser( configparser.ConfigParser ):
         )
 
         # Account for empty dirs
-        flag_file =  os.path.join( *flag_file.split( '/' ) )
+        flag_file =  os.path.normpath( flag_file )
 
         return flag_file
 

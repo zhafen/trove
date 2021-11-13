@@ -88,7 +88,7 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['high'] == 1000
         assert pm['power'] == 3
 
-        assert pm['data_dir'] == './tests/data/examples/standard/this_is_also_an_identifier'
+        assert pm['data_dir'] == 'tests/data/examples/standard/this_is_also_an_identifier'
 
     ########################################################################
 
@@ -107,7 +107,7 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['high'] == 1000
         assert pm['power'] == 1
 
-        assert pm['data_dir'] == './tests/data/examples/global_variations/more_variations/low_n/identifier_A'
+        assert pm['data_dir'] == 'tests/data/examples/global_variations/more_variations/low_n/identifier_A'
 
     ########################################################################
 
@@ -130,5 +130,18 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['power'] == 1
 
         assert pm['script_id'] == 'py.1'
-        assert pm['data_dir'] == './tests/data/examples/global_variations/identifier_A'
+        assert pm['data_dir'] == 'tests/data/examples/global_variations/identifier_A'
         assert pm['figure_dir'] == './tests/figures/more_variations/plotting_change'
+
+    ########################################################################
+
+    def test_link_params_okay_abs_path( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/abspath/abspath.trove',
+            create_data_dirs = False,
+        )
+
+        # Check
+        assert pm['data_dir'] == '/this/is/a/dummy/path/identifier_A'

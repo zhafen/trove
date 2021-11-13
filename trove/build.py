@@ -12,6 +12,7 @@ def link_params_to_config(
         script_id = None,
         variation = None,
         global_variation = None,
+        create_data_dirs = True,
         **pm
     ):
     '''Link the values of a set of existing params to those in a config,
@@ -21,9 +22,20 @@ def link_params_to_config(
         config_fp (str):
             Location of the config file to use for updating the parameters.
 
+        script_id (str):
+            Specific script to select.
+            If None, defaults to the next in the trove.
+
         variation (str):
             Specific variation to select from the config.
             If None, defaults to the next in the trove.
+
+        global_variation (str):
+            Specific global variation to select from the config.
+            If None, defaults to the next in the trove.
+
+        create_data_dirs (bool):
+            If True, create any data dirs that don't exist.
 
     Kwargs:
         All parameters to update.
@@ -81,7 +93,8 @@ def link_params_to_config(
         pm_new['data_dirs'][script_id_i] = tcp.get_data_dir(
             variation,
             global_variation,
-            script_id_i
+            script_id_i,
+            create = create_data_dirs,
         )
     pm_new['data_dir'] = pm_new['data_dirs'][script_id]
 
