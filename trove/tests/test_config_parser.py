@@ -42,10 +42,12 @@ class TestGlobalVariation( unittest.TestCase ):
         
         self.flag_file = './tests/data/examples/global_variations/more_variations/low_n/identifier_A/py.1.troveflag'
         self.data_dir = os.path.dirname( self.flag_file )
-        if os.path.isfile( self.flag_file ):
-            os.remove( self.flag_file )
+
+        # Start fresh
+        if os.path.isdir( self.data_dir ):
+            shutil.rmtree( './tests/data/examples/global_variations/more_variations' )
         if not os.path.isdir( self.data_dir ):
-            os.makedirs( self.data_dir, exist_ok=True )
+            os.makedirs( self.data_dir )
 
     ########################################################################
 

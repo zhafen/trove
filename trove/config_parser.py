@@ -75,8 +75,11 @@ class ConfigParser( configparser.ConfigParser ):
             _ for _ in self['SCRIPTS'].keys()
             if _ not in self.defaults()
         ]
-        self.manager = management.Manager( file_format, global_ids, ids, self.scripts )
+        self.manager = management.Manager( file_format, self.scripts, ids, global_ids )
+
+        # Particular formatting for file retrieval and order
         self.manager.get_file = self.get_flag_file
+        self.manager.set_order( [ 0, 1, 2 ] )
     
     ########################################################################
 
@@ -160,11 +163,11 @@ class ConfigParser( configparser.ConfigParser ):
             return variation_args
 
         if script_id is None:
-            script_id = variation_args[2]
+            script_id = variation_args[0]
         if variation is None:
             variation = variation_args[1]
         if global_variation is None:
-            global_variation = variation_args[0]
+            global_variation = variation_args[2]
 
         return script_id, variation, global_variation
 
@@ -179,12 +182,12 @@ class ConfigParser( configparser.ConfigParser ):
 
     ########################################################################
 
-    def get_data_dir( self, variation, global_variation, script_id, create=True ):
+    def get_data_dir( self, script_id, variation, global_variation, create=True ):
         '''Get the next data dir, and create it if it doesn't exist.
         '''
 
         # Get the dir
-        flag_file = self.get_flag_file( global_variation, variation, script_id )
+        flag_file = self.get_flag_file( script_id, variation, global_variation )
         next_dir = os.path.dirname( flag_file )
 
         # Make sure it exists
@@ -199,7 +202,7 @@ class ConfigParser( configparser.ConfigParser ):
 
     ########################################################################
 
-    def get_flag_file( self, global_variation, variation, script_id ):
+    def get_flag_file( self, script_id, variation, global_variation ):
 
         # Get the global variation used for the data dir.
         if self.has_option( global_variation, 'use_variation_data_dir' ):
@@ -212,7 +215,7 @@ class ConfigParser( configparser.ConfigParser ):
         flag_file = self.manager.file_format.format(
             global_variation_dir,
             variation,
-            script_id
+            script_id,
         )
 
         # Account for empty dirs

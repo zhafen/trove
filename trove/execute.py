@@ -71,7 +71,7 @@ def run( config_fp, n_procs=4, max_loops=1000, cell_timeout=1200 ):
         script_id, variation, global_variation = variation_args
 
         # Get filepaths
-        next_data_dir = tcp.get_data_dir( variation, global_variation, script_id )
+        next_data_dir = tcp.get_data_dir( script_id, variation, global_variation )
         current_script = tcp.get( 'SCRIPTS', script_id )
         current_flag_file = os.path.join( next_data_dir, '{}.troveflag'.format( script_id) )
 

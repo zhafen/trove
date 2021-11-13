@@ -91,9 +91,9 @@ def link_params_to_config(
     pm_new['data_dirs'] = {}
     for script_id_i in tcp.scripts:
         pm_new['data_dirs'][script_id_i] = tcp.get_data_dir(
+            script_id_i,
             variation,
             global_variation,
-            script_id_i,
             create = create_data_dirs,
         )
     pm_new['data_dir'] = pm_new['data_dirs'][script_id]
