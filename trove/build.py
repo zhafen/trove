@@ -98,6 +98,12 @@ def link_params_to_config(
             create = create_data_dirs,
         )
     pm_new['data_dir'] = pm_new['data_dirs'][script_id]
+    pm_new['base_data_dir'] = tcp.get_data_dir(
+        script_id,
+        variation,
+        '',
+        create = create_data_dirs,
+    )
 
     # Update and return
     pm.update( pm_new )
