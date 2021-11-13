@@ -80,8 +80,9 @@ def link_params_to_config(
             except ( SyntaxError, ValueError ) as e:
                 pass
 
-    # Store variations
+    # Store variation and important info
     pm_new['config_fp'] = config_fp
+    pm_new['config_parser'] = tcp
     pm_new['script_id'] = script_id
     pm_new['variation'] = variation
     pm_new['global_variation'] = global_variation
