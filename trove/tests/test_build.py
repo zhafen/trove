@@ -154,7 +154,6 @@ class TestLinkParams( unittest.TestCase ):
         # Update
         pm = trove_build.link_params_to_config(
             config_fp = './tests/examples/controlled_execution/controlled_execution.trove',
-            variation = 'this_is_also_an_identifier',
             n = 100,
             high = 10,
             power = 0,
@@ -165,7 +164,10 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['high'] == 1000
         assert pm['power'] == 3
 
-        assert pm['data_dir'] == 'tests/data/examples/standard/this_is_also_an_identifier'
+        assert pm['script_id'] == 'py.2'
+        assert pm['variation'] == 'this_is_also_an_identifier'
+        assert pm['global_variation'] == ''
+        assert pm['data_dir'] == 'tests/data/examples/controlled_execution/this_is_also_an_identifier'
 
     ########################################################################
 
@@ -175,14 +177,18 @@ class TestLinkParams( unittest.TestCase ):
         pm = trove_build.link_params_to_config(
             config_fp = './tests/examples/controlled_execution/controlled_execution.trove',
             variation = 'identifier_A',
+            global_variation = 'n_less_low',
             n = 100,
             high = 10,
             power = 0,
         )
 
         # Check
-        assert pm['n'] == 1000
+        assert pm['n'] == 50
         assert pm['high'] == 1000
-        assert pm['power'] == 3
+        assert pm['power'] == 1
 
-        assert pm['data_dir'] == 'tests/data/examples/standard/identifier_A'
+        assert pm['script_id'] == 'py.2'
+        assert pm['variation'] == 'identifier_A'
+        assert pm['global_variation'] == 'n_less_low'
+        assert pm['data_dir'] == 'tests/data/examples/controlled_execution/more_variations/n_less_low/identifier_A'
