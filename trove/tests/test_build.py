@@ -146,3 +146,43 @@ class TestLinkParams( unittest.TestCase ):
 
         # Check
         assert pm['data_dir'] == '/this/is/a/dummy/path/identifier_A'
+
+    ########################################################################
+
+    def test_link_params_controlled( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/controlled_execution/controlled_execution.trove',
+            variation = 'this_is_also_an_identifier',
+            n = 100,
+            high = 10,
+            power = 0,
+        )
+
+        # Check
+        assert pm['n'] == 1000
+        assert pm['high'] == 1000
+        assert pm['power'] == 3
+
+        assert pm['data_dir'] == 'tests/data/examples/standard/this_is_also_an_identifier'
+
+    ########################################################################
+
+    def test_link_params_controlled_override( self ):
+
+        # Update
+        pm = trove_build.link_params_to_config(
+            config_fp = './tests/examples/controlled_execution/controlled_execution.trove',
+            variation = 'identifier_A',
+            n = 100,
+            high = 10,
+            power = 0,
+        )
+
+        # Check
+        assert pm['n'] == 1000
+        assert pm['high'] == 1000
+        assert pm['power'] == 3
+
+        assert pm['data_dir'] == 'tests/data/examples/standard/identifier_A'

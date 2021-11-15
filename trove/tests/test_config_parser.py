@@ -78,3 +78,46 @@ class TestGlobalVariation( unittest.TestCase ):
 
         variation_args = tcp.get_next_variation_args()
         assert variation_args == ( 'py.2', 'identifier_A', 'low_n' )
+
+########################################################################
+
+class TestControlledExecution( unittest.TestCase ):
+
+    def setUp( self ):
+        
+        self.flag_file = './tests/data/examples/controlled_execution/this_is_also_an_identifier/py.2.troveflag'
+        self.data_dir = './tests/data/examples/controlled_execution' 
+        self.config_fp = './tests/examples/controlled_execution/controlled_execution.trove'
+
+        # Start fresh
+        if os.path.isdir( self.data_dir ):
+            shutil.rmtree( self.data_dir )
+        if not os.path.isdir( self.data_dir ):
+            os.makedirs( os.path.dirname( self.flag_file ), exist_ok=True )
+
+    ########################################################################
+
+    def tearDown( self ):
+
+        if os.path.isdir( self.data_dir ):
+            shutil.rmtree( self.data_dir )
+
+    ########################################################################
+
+    def test_get_next_variation( self ):
+
+        tcp = config_parser.ConfigParser( self.config_fp )
+
+        variation_args = tcp.get_next_variation_args()
+        assert variation_args == ( 'py.2', 'this_is_also_an_identifier', '' )
+
+    ########################################################################
+
+    def test_get_next_variation_subsequent( self ):
+
+        pathlib.Path( self.flag_file ).touch()
+
+        tcp = config_parser.ConfigParser( self.config_fp )
+
+        variation_args = tcp.get_next_variation_args()
+        assert variation_args == ( 'py.2', 'this_is_also_an_identifier', 'n_less_low' )

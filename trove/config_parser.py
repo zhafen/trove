@@ -69,13 +69,12 @@ class ConfigParser( configparser.ConfigParser ):
         file_format = os.path.join( *file_format )
 
         # Setup a trove manager
-        ids = list( self.variations )
-        global_ids = list( self.global_variations )
-        self.scripts = [
-            _ for _ in self['SCRIPTS'].keys()
-            if _ not in self.defaults()
-        ]
-        self.manager = management.Manager( file_format, self.scripts, ids, global_ids )
+        self.manager = management.Manager(
+            file_format,
+            self.execute['scripts'],
+            self.execute['variations'],
+            self.execute['global_variations'],
+        )
 
         # Particular formatting for file retrieval and order
         self.manager.get_file = self.get_flag_file
@@ -108,24 +107,6 @@ class ConfigParser( configparser.ConfigParser ):
         # Default
         super().read( *args, **kwargs )
 
-        # Parse for variations on the parameters
-        self.special_sections = [ 'DEFAULT', 'SCRIPTS', 'DATA PRODUCTS' ]
-        self.variations = []
-        self.global_variations = [ '', ]
-        for key in copy.deepcopy( self.keys() ):
-            if key in self.special_sections:
-                continue
-            # Retrieve global variations
-            if self.has_option( key, 'global' ):
-                if self.get( key, 'global' ):
-                    self.global_variations.append( key )
-                    continue
-            self.variations.append( key )
-
-        # When no variations, just use the defaults
-        if len( self.variations ) == 0:
-            self.variations = [ 'DEFAULT', ]
-
         # Check that the config file is formatted correctly
         if len( self.sections() ) == 0:
             raise OSError(
@@ -144,6 +125,43 @@ class ConfigParser( configparser.ConfigParser ):
                     'Config at {} does not contain '.format( self.fp ) + \
                     'required section {}.\n'.format( key )
                 )
+
+        # Parse for variations on the parameters
+        self.special_sections = [ 'DEFAULT', 'SCRIPTS', 'DATA PRODUCTS', 'EXECUTE' ]
+
+        # Setup scripts
+        self.scripts = [
+            _ for _ in self['SCRIPTS'].keys()
+            if _ not in self.defaults()
+        ]
+
+        # Setup variations and global variations
+        self.variations = []
+        self.global_variations = [ '', ]
+        for key in copy.deepcopy( self.keys() ):
+            if key in self.special_sections:
+                continue
+            # Retrieve global variations
+            if self.has_option( key, 'global' ):
+                if self.get( key, 'global' ):
+                    self.global_variations.append( key )
+                    continue
+            self.variations.append( key )
+
+        # When no variations, just use the defaults
+        if len( self.variations ) == 0:
+            self.variations = [ 'DEFAULT', ]
+
+        # Setup execution
+        self.execute = {}
+        for key in [ 'scripts', 'variations', 'global_variations' ]:
+            if self.has_option( 'EXECUTE', key ):
+                to_execute = self.get( 'EXECUTE', key )
+                to_execute = ast.literal_eval( to_execute )
+            else:
+                to_execute = getattr( self, key )
+            # Store formatted list to execute
+            self.execute[key] = to_execute
 
     ########################################################################
 
