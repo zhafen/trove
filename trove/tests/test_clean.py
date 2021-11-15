@@ -223,14 +223,3 @@ class TestCleanControlledExecution( TestClean ):
             for data_product in self.data_products:
                 data_fp = os.path.join( data_dir, data_product )
                 pathlib.Path( data_fp ).touch()
-
-    ########################################################################
-
-    def tearDown( self ):
-
-        # Full clean
-        for data_dir in self.data_dirs:
-            if os.path.exists( data_dir ):
-                shutil.rmtree( data_dir )
-
-    ########################################################################
