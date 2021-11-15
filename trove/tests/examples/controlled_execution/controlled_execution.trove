@@ -86,6 +86,7 @@ variations = [
 	'this_is_also_an_identifier',
 	]
 global_variations = [
-	'',
+	'', # Does this comment work?
+	# Does this work with a comment?
 	'n_less_low',
 	]

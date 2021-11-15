@@ -18,7 +18,6 @@ class ConfigParser( configparser.ConfigParser ):
     def __init__(
         self,
         fp = None,
-        empty_lines_in_values = False,
         interpolation = configparser.ExtendedInterpolation(),
         global_variations_dirname = 'more_variations',
         *args,
@@ -30,17 +29,12 @@ class ConfigParser( configparser.ConfigParser ):
             fp (str):
                 Filepath to config file.
 
-            empty_lines_in_values (bool):
-                Whether or not empty lines following a value should be
-                included as part of that value.
-
         Returns:
             TroveConfigParser
         '''
 
         # Super
         super().__init__(
-            empty_lines_in_values = empty_lines_in_values,
             interpolation = interpolation,
             *args,
             **kwargs
