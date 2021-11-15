@@ -20,6 +20,8 @@ class TestClean( unittest.TestCase ):
 
     def setUp( self ):
 
+        self.config_fp = './tests/examples/standard/standard.trove'
+
         self.data_dirs = [
             './tests/data/examples/standard/identifier_A' ,
             './tests/data/examples/standard/this_is_also_an_identifier' ,
@@ -51,7 +53,7 @@ class TestClean( unittest.TestCase ):
     def test_clean( self ):
 
         # Main function
-        clean.clean( './tests/examples/standard/standard.trove' )
+        clean.clean( self.config_fp )
 
         # Check
         for data_dir in self.data_dirs:
@@ -74,7 +76,7 @@ class TestClean( unittest.TestCase ):
 
         # Main function
         clean.clean(
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
             clean_jug = True,
         )
 
@@ -95,7 +97,7 @@ class TestClean( unittest.TestCase ):
         subprocess.run([
             sys.executable,
             './clean.py',
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
         ])
 
         # Check
@@ -114,14 +116,15 @@ class TestClean( unittest.TestCase ):
 
         # Main function
         clean.clean(
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
             clean_data_products = True,
         )
 
         # Check
         for data_dir in self.data_dirs:
-            fp = os.path.join( data_dir, 'pre.hdf5' )
-            assert not os.path.exists( fp )
+            for data_product in self.data_products:
+                fp = os.path.join( data_dir, data_product )
+                assert not os.path.exists( fp )
 
     ########################################################################
 
@@ -136,14 +139,16 @@ class TestClean( unittest.TestCase ):
         subprocess.run([
             sys.executable,
             './clean.py',
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
             '--clean_data'
         ])
 
         # Check
         for data_dir in self.data_dirs:
-            fp = os.path.join( data_dir, 'pre.hdf5' )
-            assert not os.path.exists( fp )
+            for data_product in self.data_products:
+                fp = os.path.join( data_dir, data_product )
+                assert not os.path.exists( fp )
+
 
     ########################################################################
 
@@ -151,7 +156,7 @@ class TestClean( unittest.TestCase ):
 
         # Main function
         clean.clean(
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
             full_clean = True
         )
 
@@ -166,7 +171,7 @@ class TestClean( unittest.TestCase ):
         subprocess.run([
             sys.executable,
             './clean.py',
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
             '--full_clean'
         ])
 
@@ -182,10 +187,50 @@ class TestClean( unittest.TestCase ):
             sys.executable,
             './bin/trove',
             'clean',
-            './tests/examples/standard/standard.trove',
+            self.config_fp,
             '--full_clean'
         ])
 
         # Check
         for data_dir in self.data_dirs:
             assert not os.path.exists( data_dir )
+
+########################################################################
+
+class TestCleanControlledExecution( TestClean ):
+
+    def setUp( self ):
+
+        self.config_fp = './tests/examples/controlled_execution/controlled_execution.trove'
+
+        self.data_dirs = [
+            # './tests/data/examples/controlled_execution/identifier_A' ,
+            './tests/data/examples/controlled_execution/this_is_also_an_identifier' ,
+            # './tests/data/examples/controlled_execution/more_variations/n_low/identifier_A' ,
+            # './tests/data/examples/controlled_execution/more_variations/n_low/this_is_also_an_identifier' ,
+            # './tests/data/examples/controlled_execution/more_variations/n_less_low/identifier_A' ,
+            './tests/data/examples/controlled_execution/more_variations/n_less_low/this_is_also_an_identifier' ,
+        ]
+        self.troveflags = [ 'py.2.troveflag' ]
+        self.data_products = [ 'main.hdf5', ]
+        
+        # Create directories
+        for data_dir in self.data_dirs:
+            os.makedirs( data_dir, exist_ok=True )
+            for troveflag in self.troveflags:
+                flag_fp = os.path.join( data_dir, troveflag )
+                pathlib.Path( flag_fp ).touch()
+            for data_product in self.data_products:
+                data_fp = os.path.join( data_dir, data_product )
+                pathlib.Path( data_fp ).touch()
+
+    ########################################################################
+
+    def tearDown( self ):
+
+        # Full clean
+        for data_dir in self.data_dirs:
+            if os.path.exists( data_dir ):
+                shutil.rmtree( data_dir )
+
+    ########################################################################
