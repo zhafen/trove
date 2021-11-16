@@ -20,6 +20,7 @@ class ConfigParser( configparser.ConfigParser ):
         fp = None,
         interpolation = configparser.ExtendedInterpolation(),
         global_variations_dirname = 'more_variations',
+        preserve_capitalization = True,
         *args,
         **kwargs
     ):
@@ -32,6 +33,10 @@ class ConfigParser( configparser.ConfigParser ):
         Returns:
             TroveConfigParser
         '''
+
+        if preserve_capitalization:
+            # Replace the option formatting that lowers the case.
+            self.optionxform = lambda x: x
 
         # Super
         super().__init__(

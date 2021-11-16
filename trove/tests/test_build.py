@@ -29,6 +29,7 @@ class TestLinkParams( unittest.TestCase ):
         assert pm['cat'] == 'the best'
         assert pm['not_in_config'] == 'yeah'
         assert pm['errors'] == None
+        assert pm['CaPsprEserVeD']
 
     ########################################################################
 
