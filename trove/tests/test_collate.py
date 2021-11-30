@@ -68,7 +68,9 @@ class TestCollate( unittest.TestCase ):
             sys.executable,
             './collate.py',
             self.config_fp,
+            '--dir_key',
             'figure_dir',
+            '--output_dir',
             self.destination_dir,
         ])
 

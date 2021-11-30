@@ -83,41 +83,29 @@ if __name__ == '__main__':
 
     # Parse args
     parser = argparse.ArgumentParser(
-        description='Clean and reset your pipeline.'
+        description='Collate output from global variations into a single folder.'
     )
     parser.add_argument(
         'config_fp',
         type = str,
-        help = 'Location of your config file used to guide cleaning.',
+        help = 'Location of your config file used to guide collating.',
     )
     parser.add_argument(
-        '--dont_clean_jug',
-        help = 'Do not remove .jugdata dirs.',
-        action = 'store_true',
+        '--dir_key',
+        type = str,
+        help = 'Config key that gives the output directory to collate.',
     )
     parser.add_argument(
-        '--clean_data',
-        help = 'Use with caution: deletes data products listed in config!',
-        action = 'store_true',
-    )
-    parser.add_argument(
-        '--full_clean',
-        help = 'Use with caution: fully deletes all data directories!',
-        action = 'store_true',
-    )
-    parser.add_argument(
-        '--quiet',
-        help = 'Quiet down the output.',
-        action = 'store_true',
+        '--output_dir',
+        type = str,
+        help = 'Location to store the output.',
     )
     args = parser.parse_args()
 
     # Run
-    clean(
+    collate(
         args.config_fp,
-        not args.dont_clean_jug,
-        args.clean_data,
-        args.full_clean,
-        not args.quiet,
+        args.dir_key,
+        args.output_dir,
     )
 
