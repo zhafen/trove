@@ -83,9 +83,11 @@ class TestCollate( unittest.TestCase ):
         subprocess.run([
             sys.executable,
             './bin/trove',
-            'clean',
+            'collate',
             self.config_fp,
+            '--dir_key',
             'figure_dir',
+            '--output_dir',
             self.destination_dir,
         ])
 
