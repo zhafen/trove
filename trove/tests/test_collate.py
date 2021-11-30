@@ -46,10 +46,19 @@ class TestCollate( unittest.TestCase ):
             'plot_this_is_also_an_identifier.png',
             'plot_this_is_also_an_identifier.low_n.png',
             'unique_plot.low_n_alternative_seed.png',
+            'inside_folder/plot_inside_identifier_A.png',
+            'inside_folder/plot_inside_combined.png',
+            'inside_folder/plot_inside_identifier_A.low_n.png',
+            'inside_folder/plot_inside_combined.low_n.png',
+            'inside_folder/plot_inside_identifier_A.low_n_alternative_seed.png',
+            'inside_folder/plot_inside_combined.low_n_alternative_seed.png',
         ]
+        failed = []
         for f in files:
             fp = os.path.join( self.destination_dir, f ) 
-            assert os.path.isfile( fp )
+            if not os.path.isfile( fp ):
+                failed.append( fp )
+        assert len( failed ) == 0, print( 'These fps do not exist: {}'.format( failed ) )
 
     ########################################################################
 

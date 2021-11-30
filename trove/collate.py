@@ -49,14 +49,21 @@ def collate( config_fp, dir_key, output_dir, verbose=True, skip_suspect_folders=
         if gv == '':
             gv = 'DEFAULT'
 
-        # Get the dir
+        # Get the dir and output dir
         dir_i = tcp.get( gv, dir_key )
         dir_i = os.path.abspath( dir_i )
+        output_dir = os.path.abspath( output_dir )
+
+        print( '    Copying {}...'.format( gv ) )
 
         # Walk through the dir and copy
         for (dirpath, dirnames, filenames) in os.walk( dir_i ):
 
-            print( '    Copying {}...'.format( gv ) )
+            # Create the appropriate output dir
+            if dirpath != dir_i:
+                output_dir_i = dirpath.replace( dir_i, output_dir )
+            else:
+                output_dir_i = output_dir
 
             # Skip any folders that might cause recursion errors
             if skip_suspect_folders and ( gv == 'DEFAULT' ):
@@ -71,8 +78,11 @@ def collate( config_fp, dir_key, output_dir, verbose=True, skip_suspect_folders=
                     dst_file = base + '.' + gv + tail
                 else:
                     dst_file = src_file
-                dst_fp = os.path.join( output_dir, dst_file )
+                dst_fp = os.path.join( output_dir_i, dst_file )
                 src_fp = os.path.join( dirpath, src_file )
+
+                # Ensure destination folder exists
+                os.makedirs( os.path.dirname( dst_fp ), exist_ok=True )
 
                 # Copy
                 shutil.copyfile( src_fp, dst_fp )
