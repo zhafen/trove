@@ -270,6 +270,6 @@ if __name__ == '__main__':
         args.config_fp,
         args.n_processors,
         args.max_loops,
-        args.cell_timeout,
+        int( args.cell_timeout ),
     )
 
