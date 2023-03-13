@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="trove",
+    name="treasure-trove",
     version="0.1",
     author="Zach Hafen-Saavedra",
     author_email="zachary.h.hafen@gmail.com",
