@@ -23,7 +23,7 @@ setuptools.setup(
         'mock>=5.0.1',
         'nbconvert>=6.5.4',
         'nbformat>=5.7.3',
-        'numpy>=1.23.5',
+        'numpy',
         'setuptools>=65.6.3',
 	'jug>=2.2',
         'simple_augment>=1.0',
